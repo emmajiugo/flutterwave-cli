@@ -1,5 +1,5 @@
 <p align="center">
-    <img title="Rave" src="https://cdn-images-1.medium.com/max/2000/1*9Ns-5XIj1xgGFgZ8t_KkZw.png" />
+    <img title="Rave" height="150" src="https://cdn-images-1.medium.com/max/2000/1*9Ns-5XIj1xgGFgZ8t_KkZw.png" />
 </p>
 
 <p align="center">
