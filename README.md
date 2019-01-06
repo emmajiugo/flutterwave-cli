@@ -1,5 +1,5 @@
 <p align="center">
-    <img title="Laravel Zero" height="100" width="150%" src="https://s23069.pcdn.co/wp-content/uploads/2018/11/Rave-by-flutterwave.jpg" />
+    <img title="Laravel Zero" height="100" src="https://cdn-images-1.medium.com/max/2000/1*9Ns-5XIj1xgGFgZ8t_KkZw.png" />
 </p>
 
 <p align="center">
