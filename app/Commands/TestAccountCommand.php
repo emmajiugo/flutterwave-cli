@@ -6,7 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 use App\Traits\RaveBase;
 
-class TestCardCommand extends Command
+class TestAccountCommand extends Command
 {
     //Add Trait
     use RaveBase {
@@ -27,23 +27,24 @@ class TestCardCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'test:card {amount?} {cardno?} {pin?} {cvv?} {expiryyear?} {expirymonth?} {email?} {phone?} {firstname?} {lastname?}';
+    protected $signature = 'test:account {amount?} {accountbank?} {accountnumber?} {email?} {phone?} {firstname?} {lastname?}';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Run a card charge test.';
+    protected $description = 'Run an account charge test.';
 
     /**
-     * initialie inputs
+     * initialize inputs
      * @var string
      */
-    protected $amount; protected $expiryyear;
-    protected $cardno; protected $expirymonth;
-    protected $pin; protected $email; protected $firstname;
-    protected $cvv; protected $phone; protected $lastname;
+    protected $amount;
+    protected $accountbank;
+    protected $accountnumber;
+    protected $email; protected $firstname;
+    protected $phone; protected $lastname;
 
     /**
      * get input details from user to generate payload
@@ -52,11 +53,8 @@ class TestCardCommand extends Command
     protected function getInputDetails()
     {
         $this->amount = $this->argument('amount');
-        $this->cardno = $this->argument('cardno');
-        $this->pin = $this->argument('pin');
-        $this->cvv = $this->argument('cvv');
-        $this->expiryyear = $this->argument('expiryyear');
-        $this->expirymonth = $this->argument('expirymonth');
+        $this->accountbank = $this->argument('accountbank');
+        $this->accountnumber = $this->argument('accountnumber');
         $this->email = $this->argument('email');
         $this->phone = $this->argument('phone');
         $this->firstname = $this->argument('firstname');
@@ -66,20 +64,11 @@ class TestCardCommand extends Command
         if (!$this->amount){
             $this->amount = $this->ask('Enter an amount.');
         }
-        if (!$this->cardno){
-            $this->cardno = $this->ask('Enter test card number.');
+        if (!$this->accountbank){
+            $this->accountbank = $this->ask('Enter Bank. (Please enter "044" for Access Bank)');
         }        
-        if (!$this->expirymonth){
-            $this->expirymonth = $this->ask('Enter a test card expirymonth.');
-        }
-        if (!$this->expiryyear){
-            $this->expiryyear = $this->ask('Enter a test card expiryyear.');
-        }
-        if (!$this->cvv){
-            $this->cvv = $this->ask('Enter a test card cvv.');
-        }
-        if (!$this->pin){
-            $this->pin = $this->ask('Enter a test card pin.');
+        if (!$this->accountnumber){
+            $this->accountnumber = $this->ask('Enter Account Number. (Please enter "0690000031")');
         }
         if (!$this->firstname){
             $this->firstname = $this->ask('Enter firstname.');
@@ -97,15 +86,12 @@ class TestCardCommand extends Command
         //set payload data
         return [
             'PBFPubKey' => $this->pkey,
-            'cardno' => $this->cardno,
             'currency' => 'NGN',
             'country' => 'NG',
-            'cvv' => $this->cvv,
-            'pin' => $this->pin,
-            'suggested_auth' => 'PIN',
+            'accountbank' => $this->accountbank,
+            'accountnumber' => $this->accountnumber,
+            "payment_type" =>  "account",
             'amount' => $this->amount,
-            'expiryyear' => $this->expiryyear,
-            'expirymonth' => $this->expirymonth,
             'email' => $this->email,
             "phonenumber"=> $this->phone,
             "firstname"=> $this->firstname,
@@ -126,14 +112,15 @@ class TestCardCommand extends Command
         $payload = $this->getInputDetails();
 
         //charge card
-        $res = $this->chargeCard($payload);
+        $res = $this->chargeAccount($payload);
         $flwref = $res['data']['flwRef'];
 
         //get OTP
         $OTP = $this->ask('Enter OTP');
-        $result = $this->getCardOTP($flwref, $OTP);
+        $result = $this->getAccountOTP($flwref, $OTP);
 
         // $this->notify('This is notification', 'Fuck off');
-        dd('Transaction Status: '.strtoupper($result['data']['data']['responsemessage'])); 
+        dd('Transaction Status: '.strtoupper($result['data']['status']));
+        // dd($res);
     }
 }

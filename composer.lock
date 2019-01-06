@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b5c69eb865b3aa49ed837c113b6ef854",
+    "content-hash": "8e5f5ae57914f24be945082e9d74b2dd",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -809,16 +809,16 @@
         },
         {
             "name": "laravel-zero/framework",
-            "version": "v5.7.18",
+            "version": "v5.7.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel-zero/framework.git",
-                "reference": "2992105af8675bccb85b28bd5724c584c9a80fbb"
+                "reference": "a938a5a1d7542b5689778c69a51aa7da94cc9048"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel-zero/framework/zipball/2992105af8675bccb85b28bd5724c584c9a80fbb",
-                "reference": "2992105af8675bccb85b28bd5724c584c9a80fbb",
+                "url": "https://api.github.com/repos/laravel-zero/framework/zipball/a938a5a1d7542b5689778c69a51aa7da94cc9048",
+                "reference": "a938a5a1d7542b5689778c69a51aa7da94cc9048",
                 "shasum": ""
             },
             "require": {
@@ -881,7 +881,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-12-30T19:47:08+00:00"
+            "time": "2019-01-04T16:03:17+00:00"
         },
         {
             "name": "league/flysystem",
@@ -2129,6 +2129,56 @@
                 "dump"
             ],
             "time": "2018-11-25T12:50:42+00:00"
+        },
+        {
+            "name": "vlucas/phpdotenv",
+            "version": "v2.5.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vlucas/phpdotenv.git",
+                "reference": "cfd5dc225767ca154853752abc93aeec040fcf36"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vlucas/phpdotenv/zipball/cfd5dc225767ca154853752abc93aeec040fcf36",
+                "reference": "cfd5dc225767ca154853752abc93aeec040fcf36",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.35 || ^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Dotenv\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Vance Lucas",
+                    "email": "vance@vancelucas.com",
+                    "homepage": "http://www.vancelucas.com"
+                }
+            ],
+            "description": "Loads environment variables from `.env` to `getenv()`, `$_ENV` and `$_SERVER` automagically.",
+            "keywords": [
+                "dotenv",
+                "env",
+                "environment"
+            ],
+            "time": "2018-10-30T17:29:25+00:00"
         }
     ],
     "packages-dev": [

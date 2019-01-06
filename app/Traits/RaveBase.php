@@ -6,9 +6,18 @@ namespace App\Traits;
  */
 trait RaveBase
 {
-    public $skey = "FLWSECK-ea81e705d82161de5b7757c897d96ba4-X"; 
-    public $pkey = "FLWPUBK-56e4a2c6c9a6b58364bfd07fc1993e2c-X";
+    public $skey; 
+    public $pkey;
     public $url = "https://ravesandboxapi.flutterwave.com";
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->skey = env('SECRET_KEY');
+        $this->pkey = env('PUBLIC_KEY');
+    }
 
     /**
      * Encryption starts here
@@ -82,9 +91,9 @@ trait RaveBase
     }
 
     /**
-     * Validate charge after OTP
+     * Validate card charge after OTP
      */
-    public function getOTP($flwref, $OTP)
+    public function getCardOTP($flwref, $OTP)
     {
         $data = array(
             "PBFPubKey" => $this->pkey,
@@ -96,5 +105,95 @@ trait RaveBase
         $endpoint_url = $this->url."/flwv3-pug/getpaidx/api/validatecharge";
         $res = $this->postCURL($endpoint_url, $data);
         return $res;
+    }
+
+    /**
+     * Rave charge account
+     */
+    public function chargeAccount($payload)
+    {
+        $key = $this->getKey($this->skey);
+        $dataReq = json_encode($payload);
+        $post_enc = $this->encrypt3Des($dataReq, $key);
+        $postdata = array(
+            'PBFPubKey' => $this->pkey,
+            'client' => $post_enc,
+            'alg' => '3DES-24'
+        );
+
+        //excute the charge
+        $endpoint_url = $this->url."/flwv3-pug/getpaidx/api/charge";
+        $res = $this->postCURL($endpoint_url, $postdata);
+        return $res;
+    }
+
+    /**
+     * Validate card charge after OTP
+     */
+    public function getAccountOTP($flwref, $OTP)
+    {
+        $data = array(
+            "PBFPubKey" => $this->pkey,
+            "transactionreference" => $flwref,
+            "otp" => $OTP
+        );
+
+        //validate the charge
+        $endpoint_url = $this->url."/flwv3-pug/getpaidx/api/validate";
+        $res = $this->postCURL($endpoint_url, $data);
+        return $res;
+    }
+
+    /**
+     * single transfer
+     * @return Array response
+     */
+    public function singleTransfer($payload)
+    {
+        //initiate transfer
+        $endpoint_url = $this->url."/v2/gpx/transfers/create";
+        $res = $this->postCURL($endpoint_url, $payload);
+        return $res;
+    }
+
+    /**
+     * Copy a file, or recursively copy a folder and its contents
+     * @param       string   $source    Source path
+     * @param       string   $dest      Destination path
+     * @param       int      $permissions New folder creation permissions
+     * @return      bool     Returns true on success, false on failure
+     */
+    public function xcopy($source, $dest, $permissions = 0755)
+    {
+        // Check for symlinks
+        if (is_link($source)) {
+            return symlink(readlink($source), $dest);
+        }
+
+        // Simple copy for a file
+        if (is_file($source)) {
+            return copy($source, $dest);
+        }
+
+        // Make destination directory
+        if (!is_dir($dest)) {
+            mkdir($dest, $permissions);
+        }
+
+        // Loop through the folder
+        $dir = dir($source);
+        while (false !== $entry = $dir->read()) {
+            // Skip pointers
+            if ($entry == '.' || $entry == '..') {
+                continue;
+            }
+
+            // Deep copy directories
+            $this->xcopy("$source/$entry", "$dest/$entry", $permissions);
+        }
+
+        // Clean up
+        $dir->close();
+        return true;
     }
 }
