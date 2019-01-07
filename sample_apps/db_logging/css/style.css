@@ -1,0 +1,40 @@
+.pageElement {
+    background-color: white;
+    height: 20px;
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    box-shadow: 0 1px 3px 0 #e6ebf1;
+    -webkit-transition: box-shadow 150ms ease;
+    transition: box-shadow 150ms ease;
+  }
+  
+  .pageElement--focus {
+    box-shadow: 0 1px 3px 0 #cfd7df;
+  }
+  
+  .pageElement--invalid {
+    border-color: #fa755a;
+  }
+  
+  .pageElement--webkit-autofill {
+    background-color: #fefde5 !important;
+  }
+  img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+  }
+  input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+ }
+ input[type=email] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}

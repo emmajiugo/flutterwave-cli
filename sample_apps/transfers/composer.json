@@ -1,0 +1,6 @@
+{
+    "require": {
+        "pusher/pusher-php-server": "^3.2",
+        "vlucas/phpdotenv": "^2.5"
+    }
+}
