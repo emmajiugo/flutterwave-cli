@@ -80,6 +80,16 @@ class SampleAppsCommand extends Command
                 $res = $this->createSampleApp($this->type);
                 return $res;
                 break;
+            case 'transfer':
+                //run a function here and return 'app created'
+                $res = $this->createSampleApp($this->type);
+                return $res;
+                break;
+            case 'db_logging':
+                //run a function here and return 'app created'
+                $res = $this->createSampleApp($this->type);
+                return $res;
+                break;
             
             default:
                 return 'Oops! sample app not supported yet.';
