@@ -14,7 +14,7 @@
 
 Not in production yet, but for the mean time you can help me test.
 
-##Run Test
+## Run Test
 1. Clone the Repo to your local machine.
 2. `cd` into the directory and run `composer install` to install dependencies.
 3. Type in `rave php` to view the available commands.
