@@ -17,11 +17,15 @@ Not in production yet, but for the mean time you can help me test.
 ## Run Test
 1. Clone the Repo to your local machine.
 2. `cd` into the directory and run `composer install` to install dependencies.
-3. Type in `rave php` to view the available commands.
+3. Type in `php rave` to view the available commands.
 4. To test `card charge` on the terminal, run `php rave test:card`
 5. To test `account charge` on the terminal, run `php rave test:account`
 6. To test `transfer` on the terminal, run `php rave test:transfer`
-7. To generate sample apps, run `php rave generate:sampleapp`. This command will list all available or future support of sample apps. But because we are still in the development mode, the sample apps supported are `DB Logging` and `Transfer`
+7. To generate sample apps, run `php rave generate:sampleapp`. This command will list all available or future support of sample apps. But because we are still in the development mode, the sample apps supported are:
+`- DB Logging`
+`- Transfer`
+`- Charge`
+`- 3DSecure`
 
 
 Test and give me your feedback.
