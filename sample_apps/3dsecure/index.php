@@ -3,8 +3,8 @@ session_start();
 require('library.php');
 
 //set keys
-$secret_key = "FLWSECK-ea81e705d82161de5b7757c897d96ba4-X";
-$public_key = "FLWPUBK-56e4a2c6c9a6b58364bfd07fc1993e2c-X";
+$secret_key = "FLWSECK-xxxx-X";
+$public_key = "FLWPUBK-xxxx-X";
 $baseurl = "https://ravesandboxapi.flutterwave.com";
 $page_status = '';
 
