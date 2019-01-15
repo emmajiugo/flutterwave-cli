@@ -22,10 +22,12 @@ Not in production yet, but for the mean time you can help me test.
 5. To test `account charge` on the terminal, run `php rave test:account`
 6. To test `transfer` on the terminal, run `php rave test:transfer`
 7. To generate sample apps, run `php rave generate:sampleapp`. This command will list all available or future support of sample apps. But because we are still in the development mode, the sample apps supported are:
-`- DB Logging`
-`- Transfer`
-`- Charge`
-`- 3DSecure`
+- `DB Logging`
+- `Transfer`
+- `Charge`
+- `3DSecure`
+- `Extra-Information`
+- `Tokenized Charges`
 
 
 Test and give me your feedback.
