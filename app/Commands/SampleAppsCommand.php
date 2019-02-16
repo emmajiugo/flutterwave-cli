@@ -56,6 +56,7 @@ class SampleAppsCommand extends Command
         $this->info("========================");
         // $this->info("");
         
+        $this->line("[rave_modal] <comment>Modal sample in Inline, Standard and Quick Setup</comment>");
         $this->line("[charge] <comment>Card and Account Charge Sample App</comment>");
         $this->line("[3dsecure] <comment>3DSecure Payment Sample App</comment>");
         $this->line("[transfers] <comment>Single and Bulk Transfer Sample App</comment>");
@@ -75,17 +76,47 @@ class SampleAppsCommand extends Command
 
         //switch case
         switch ($this->type) {
+            case '3dsecure':
+                //run a function here and return 'app created'
+                $res = $this->createSampleApp($this->type);
+                return $res;
+                break;
             case 'charge':
                 //run a function here and return 'app created'
                 $res = $this->createSampleApp($this->type);
                 return $res;
                 break;
-            case 'transfer':
+            case 'db_logging':
                 //run a function here and return 'app created'
                 $res = $this->createSampleApp($this->type);
                 return $res;
                 break;
-            case 'db_logging':
+            case 'extra_info':
+                //run a function here and return 'app created'
+                $res = $this->createSampleApp($this->type);
+                return $res;
+                break;            
+            case 'rave_modal':
+                //run a function here and return 'app created'
+                $res = $this->createSampleApp($this->type);
+                return $res;
+                break;
+            case 'splitpayment':
+                //run a function here and return 'app created'
+                $res = $this->createSampleApp($this->type);
+                return $res;
+                break;
+            case 'tokenized_charges':
+                //run a function here and return 'app created'
+                $res = $this->createSampleApp($this->type);
+                return $res;
+                break;
+            case 'transfers':
+                //run a function here and return 'app created'
+                $res = $this->createSampleApp($this->type);
+                return $res;
+                break;
+            case 'webhook':
                 //run a function here and return 'app created'
                 $res = $this->createSampleApp($this->type);
                 return $res;

@@ -10,7 +10,10 @@
   <a href="https://packagist.org/packages/laravel-zero/framework"><img src="https://poser.pugx.org/laravel-zero/framework/license.svg" alt="License"></a>
 </p> -->
 
-## Still Under Development
+## Rave PHP CLI
+The Rave CLI application helps you tests some features of Rave on the go and also generate sample applications that shows you the simplest and easy way of how these features work and how to implement them into your own application or platform.
+
+### Still Under Development
 
 Not in production yet, but for the mean time you can help me test.
 
@@ -22,13 +25,17 @@ Not in production yet, but for the mean time you can help me test.
 5. To test `account charge` on the terminal, run `php rave test:account`
 6. To test `transfer` on the terminal, run `php rave test:transfer`
 7. To generate sample apps, run `php rave generate:sampleapp`. This command will list all available or future support of sample apps. But because we are still in the development mode, the sample apps supported are:
-- `DB Logging`
-- `Transfer`
-- `Charge`
 - `3DSecure`
-- `Extra-Information`
+- `Charge`
+- `DB Logging`
+- `Extra-Info` i.e. passing extra information to Rave
+- `Rave Modal` i.e. Inline, Standard setup
+- `Split Payment`
 - `Tokenized Charges`
+- `Transfers`
+- `Webhook`
 
 
 Test and give me your feedback.
-
+Chigbo Ezejiugo
+emmajiugo@gmail.com
