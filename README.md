@@ -36,6 +36,6 @@ Not in production yet, but for the mean time you can help me test.
 - `Webhook`
 
 
-Test and give me your feedback.
-Chigbo Ezejiugo
+Test and give me your feedback.\\n
+Chigbo Ezejiugo\\n
 emmajiugo@gmail.com
