@@ -121,6 +121,9 @@ class SampleAppsCommand extends Command
                 $res = $this->createSampleApp($this->type);
                 return $res;
                 break;
+            case '':
+                return 'Oops! You didn\'t select any app.';
+                break;
             
             default:
                 return 'Oops! sample app not supported yet.';
@@ -133,7 +136,7 @@ class SampleAppsCommand extends Command
      */
     public function createSampleApp($app)
     {
-        $source = getcwd().'\\sample_apps\\'.$app; //source path
+        $source = getcwd().'\\rave_apps\\'.$app; //source path
         $dest = ''; //destination path
 
         //ask for destination path
