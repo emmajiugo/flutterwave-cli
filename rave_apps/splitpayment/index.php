@@ -44,17 +44,21 @@ function payWithRave(email) {
         txref: "rave-123456",
         subaccounts: [
           {
-            id: "RS_ED071C8796497315BD851F4A0B89DAC9",
-            transaction_charge_type: "flat_subaccount",
-            transaction_split_ratio:"3",
-            transaction_charge: "40"
+            id: "RS_ED071C8796497315BD851F4A0B89DAC9"
           },
           
           {
-            id: "RS_1CCEB40AFBC50D0CB3ADAAF102CC974F",
-            transaction_charge_type: "flat_subaccount",
-            transaction_split_ratio:"3",
-            transaction_charge: "40"
+            id: "RS_1CCEB40AFBC50D0CB3ADAAF102CC974F"
+          },
+          {
+            id: "RS_ED071C8796497315BD851F4A0B89DAC9"
+          },
+          
+          {
+            id: "RS_1CCEB40AFBC50D0CB3ADAAF102CC974F"
+          },
+          {
+            id: "RS_ED071C8796497315BD851F4A0B89DAC9"
           }
         ],
         meta: [{
