@@ -34,7 +34,7 @@ class WebhookPingCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Resend a failed transaction webhook to your server';
+    protected $description = 'Ping test webhook response to your URL';
 
     /**
      * Execute the console command.
