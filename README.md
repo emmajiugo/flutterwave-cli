@@ -5,18 +5,14 @@
 ## Flutterwave PHP CLI
 The Flutterwave CLI application helps you tests some features of Flutterwave on the go and also generate sample applications that shows you the simplest and easy way of how these features work and how to implement them into your own application or platform.
 
-### Still Under Development
-
-Not in production yet, but for the mean time you can help me test.
-
-## Run Test
+## Usage:
 1. Clone the Repo to your local machine.
 2. `cd` into the directory and run `composer install` to install dependencies.
-3. Type in `php Flutterwave` to view the available commands.
-4. To test `card charge` on the terminal, run `php Flutterwave test:card`
-5. To test `account charge` on the terminal, run `php Flutterwave test:account`
-6. To test `transfer` on the terminal, run `php Flutterwave test:transfer`
-7. To generate sample apps, run `php Flutterwave generate:sampleapp`. This command will list all available or future support of sample apps. But because we are still in the development mode, the sample apps supported are:
+3. Type in `php flutterwave` to view the available commands.
+4. To test `card charge` on the terminal, run `php flutterwave test:card`
+5. To test `account charge` on the terminal, run `php flutterwave test:account`
+6. To test `transfer` on the terminal, run `php flutterwave test:transfer`
+7. To generate sample apps, run `php flutterwave generate:sampleapp`. This command will list all available or future support of sample apps. But because we are still in the development mode, the sample apps supported are:
 - `3DSecure`
 - `Charge`
 - `DB Logging`
