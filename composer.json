@@ -1,13 +1,13 @@
 {
-    "name": "emmajiugo/rave-cli",
-    "description": "A CLI app that helps you test Rave payment on the go and also generate sample apps.",
-    "keywords": ["framework", "flutterwave rave", "rave", "rave cli", "rave console", "cli"],
+    "name": "emmajiugo/flutterwave-cli",
+    "description": "A CLI app that helps you test Flutterwave payment on the go and also generate sample apps.",
+    "keywords": ["framework", "flutterwave", "rave", "rave cli", "flutterwave cli", "rave console", "flutterwave console", "cli"],
     "homepage": "https://flutterwave.com",
     "type": "project",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/emmajiugo/rave-cli-php/issues",
-        "source": "https://github.com/emmajiugo/rave-cli-php"
+        "issues": "https://github.com/emmajiugo/flutterwave-cli/issues",
+        "source": "https://github.com/emmajiugo/flutterwave-cli"
     },
     "authors": [
         {
@@ -16,9 +16,11 @@
         }
     ],
     "require": {
-        "php": "^7.1.3",
-        "laravel-zero/framework": "5.7.*",
-        "vlucas/phpdotenv": "^2.0"
+        "php": "^7.2.5",
+        "guzzlehttp/guzzle": "^7.0",
+        "laravel-zero/framework": "^7.0",
+        "vlucas/phpdotenv": "^4.0",
+        "yuloh/open": "^0.1.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.0",
@@ -49,5 +51,5 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "bin": ["rave"]
+    "bin": ["flutterwave"]
 }

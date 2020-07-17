@@ -4,13 +4,13 @@ namespace App\Commands;
 
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
-use App\Traits\RaveBase;
+use App\Traits\FlutterwaveBase;
 
 class TestTransferCommand extends Command
 {
     //Add Trait
-    use RaveBase {
-        RaveBase::__construct as RaveConstruct;
+    use FlutterwaveBase {
+        FlutterwaveBase::__construct as FlutterwaveConstruct;
     }
 
     /**
@@ -19,7 +19,7 @@ class TestTransferCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        self::RaveConstruct();
+        self::FlutterwaveConstruct();
     }
 
     /**
@@ -27,23 +27,24 @@ class TestTransferCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'test:transfer {amount?} {accountbank?} {accountnumber?} {narration?} {currency?}';
+    protected $signature = 'transfer {amount?} {accountbank?} {accountnumber?} {narration?} {currency?}';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Run a transfer test.';
+    protected $description = 'Run a transfer.';
 
     /**
      * initialize inputs
      * @var string
      */
-    protected $amount; 
+    protected $amount;
     protected $accountbank;
     protected $accountnumber;
-    protected $narration; protected $currency;
+    protected $narration;
+    protected $currency;
 
     /**
      * get input details from user to generate payload
@@ -66,7 +67,7 @@ class TestTransferCommand extends Command
         }
         if (!$this->accountbank){
             $this->accountbank = $this->ask('Enter Bank for transfer. (Please enter "044" for Access Bank)');
-        }        
+        }
         if (!$this->accountnumber){
             $this->accountnumber = $this->ask('Enter Account Number. (Please enter "0690000031")');
         }
@@ -85,7 +86,7 @@ class TestTransferCommand extends Command
             "reference" => time(),
         ];
     }
-    
+
 
     /**
      * Execute the console command.
@@ -94,14 +95,6 @@ class TestTransferCommand extends Command
      */
     public function handle()
     {
-        //get inputs from users
-        $payload = $this->getInputDetails();
 
-        //charge card
-        $res = $this->singleTransfer($payload);
-
-        // $this->notify('This is notification', 'Fuck off');
-        dd('Transfer Status: '.strtoupper($res['status']).'. Message: '.strtoupper($res['message']));
-        // dd($res);
     }
 }

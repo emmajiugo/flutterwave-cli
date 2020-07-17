@@ -4,13 +4,13 @@ namespace App\Commands;
 
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
-use App\Traits\RaveBase;
+use App\Traits\FlutterwaveBase;
 
 class SampleAppsCommand extends Command
 {
     //Add Trait
-    use RaveBase {
-        RaveBase::__construct as RaveConstruct;
+    use FlutterwaveBase {
+        FlutterwaveBase::__construct as FlutterwaveConstruct;
     }
 
     /**
@@ -19,7 +19,7 @@ class SampleAppsCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        self::RaveConstruct();
+        self::FlutterwaveConstruct();
     }
 
     /**
@@ -55,7 +55,7 @@ class SampleAppsCommand extends Command
         $this->info("SUPPORTED SAMPLE APPS");
         $this->info("========================");
         // $this->info("");
-        
+
         $this->line("[rave_modal] <comment>Modal sample in Inline, Standard and Quick Setup</comment>");
         $this->line("[charge] <comment>Card and Account Charge Sample App</comment>");
         $this->line("[3dsecure] <comment>3DSecure Payment Sample App</comment>");
@@ -68,6 +68,7 @@ class SampleAppsCommand extends Command
         $this->line("[tokenized_charges] <comment>How to Tokenize a Card</comment>");
         $this->line("[preauth_service] <comment>How to use the Preauth Services</comment>");
         $this->line("[db_logging] <comment>How to log your response to DB.</comment>");
+        $this->line("");
 
         //ask questions for details
         if (!$this->type){
@@ -95,7 +96,7 @@ class SampleAppsCommand extends Command
                 //run a function here and return 'app created'
                 $res = $this->createSampleApp($this->type);
                 return $res;
-                break;            
+                break;
             case 'rave_modal':
                 //run a function here and return 'app created'
                 $res = $this->createSampleApp($this->type);
@@ -124,7 +125,7 @@ class SampleAppsCommand extends Command
             case '':
                 return 'Oops! You didn\'t select any app.';
                 break;
-            
+
             default:
                 return 'Oops! sample app not supported yet.';
                 break;
@@ -136,7 +137,7 @@ class SampleAppsCommand extends Command
      */
     public function createSampleApp($app)
     {
-        $source = getcwd().'\\rave_apps\\'.$app; //source path
+        $source = getcwd().'\\FLW\\'.$app; //source path
         $dest = ''; //destination path
 
         //ask for destination path
