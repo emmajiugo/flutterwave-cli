@@ -1,37 +1,33 @@
 <p align="center">
-    <img title="Laravel Zero" height="100" src="https://raw.githubusercontent.com/laravel-zero/docs/master/images/logo/laravel-zero-readme.png" />
+    <img title="Flutterwave" height="200" src="https://cdn-images-1.medium.com/max/2000/1*9Ns-5XIj1xgGFgZ8t_KkZw.png" />
 </p>
 
-<p align="center">
-  <a href="https://github.com/laravel-zero/framework/actions"><img src="https://img.shields.io/github/workflow/status/laravel-zero/framework/Continuous%20Integration.svg" alt="Build Status"></img></a>
-  <a href="https://scrutinizer-ci.com/g/laravel-zero/framework"><img src="https://img.shields.io/scrutinizer/g/laravel-zero/framework.svg" alt="Quality Score"></img></a>
-  <a href="https://packagist.org/packages/laravel-zero/framework"><img src="https://poser.pugx.org/laravel-zero/framework/d/total.svg" alt="Total Downloads"></a>
-  <a href="https://packagist.org/packages/laravel-zero/framework"><img src="https://poser.pugx.org/laravel-zero/framework/v/stable.svg" alt="Latest Stable Version"></a>
-  <a href="https://packagist.org/packages/laravel-zero/framework"><img src="https://poser.pugx.org/laravel-zero/framework/license.svg" alt="License"></a>
-</p>
+## Flutterwave PHP CLI
+The Flutterwave CLI application helps you tests some features of Flutterwave on the go and also generate sample applications that shows you the simplest and easy way of how these features work and how to implement them into your own application or platform.
 
-<h4> <center>This is a <bold>community project</bold> and not an official Laravel one </center></h4>
+### Still Under Development
 
-Laravel Zero was created by, and is maintained by [Nuno Maduro](https://github.com/nunomaduro), and is a micro-framework that provides an elegant starting point for your console application. It is an **unofficial** and customized version of Laravel optimized for building command-line applications.
+Not in production yet, but for the mean time you can help me test.
 
-- Built on top of the [Laravel](https://laravel.com) components.
-- Optional installation of Laravel [Eloquent](https://laravel-zero.com/docs/database/), Laravel [Logging](https://laravel-zero.com/docs/logging/) and many others.
-- Supports interactive [menus](https://laravel-zero.com/docs/build-interactive-menus/) and [desktop notifications](https://laravel-zero.com/docs/send-desktop-notifications/) on Linux, Windows & MacOS.
-- Ships with a [Scheduler](https://laravel-zero.com/docs/task-scheduling/) and  a [Standalone Compiler](https://laravel-zero.com/docs/build-a-standalone-application/).
-- Integration with [Collision](https://github.com/nunomaduro/collision) - Beautiful error reporting
+## Run Test
+1. Clone the Repo to your local machine.
+2. `cd` into the directory and run `composer install` to install dependencies.
+3. Type in `php Flutterwave` to view the available commands.
+4. To test `card charge` on the terminal, run `php Flutterwave test:card`
+5. To test `account charge` on the terminal, run `php Flutterwave test:account`
+6. To test `transfer` on the terminal, run `php Flutterwave test:transfer`
+7. To generate sample apps, run `php Flutterwave generate:sampleapp`. This command will list all available or future support of sample apps. But because we are still in the development mode, the sample apps supported are:
+- `3DSecure`
+- `Charge`
+- `DB Logging`
+- `Extra-Info` i.e. passing extra information to Flutterwave
+- `Flutterwave Modal` i.e. Inline, Standard setup
+- `Split Payment`
+- `Tokenized Charges`
+- `Transfers`
+- `Webhook`
 
-------
 
-## Documentation
-
-For full documentation, visit [laravel-zero.com](https://laravel-zero.com/).
-
-## Support the development
-**Do you like this project? Support it by donating**
-
-- PayPal: [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=66BYDWAT92N6L)
-- Patreon: [Donate](https://www.patreon.com/nunomaduro)
-
-## License
-
-Laravel Zero is an open-source software licensed under the [MIT license](https://github.com/laravel-zero/laravel-zero/blob/stable/LICENSE.md).
+Test and give me your feedback.  
+Chigbo Ezejiugo  
+emmajiugo@gmail.com
