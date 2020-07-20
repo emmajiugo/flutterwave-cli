@@ -1,5 +1,5 @@
 <p align="center">
-    <img title="Flutterwave" height="200" src="https://flutterwave.com/images/logo-colored.svg" width="60%/>
+    <img title="Flutterwave" height="200" src="https://flutterwave.com/images/logo-colored.svg" width="50%"/>
 </p>
 
 ## Flutterwave PHP CLI
@@ -12,7 +12,7 @@ The Flutterwave CLI application helps you tests some features of Flutterwave on 
 4. To test `card charge` on the terminal, run `php flutterwave test:card`
 5. To test `account charge` on the terminal, run `php flutterwave test:account`
 6. To test `transfer` on the terminal, run `php flutterwave test:transfer`
-7. To generate sample apps, run `php flutterwave generate:sampleapp`. This command will list all available or future support of sample apps. But because we are still in the development mode, the sample apps supported are:
+7. To generate sample apps, run `php flutterwave generate:app`. This command will list all available or future support of sample apps. But because we are still in the development mode, the sample apps supported are:
 - `3DSecure`
 - `Charge`
 - `DB Logging`
