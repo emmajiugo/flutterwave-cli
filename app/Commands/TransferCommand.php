@@ -6,7 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 use App\Traits\FlutterwaveBase;
 
-class TestTransferCommand extends Command
+class TransferCommand extends Command
 {
     //Add Trait
     use FlutterwaveBase {

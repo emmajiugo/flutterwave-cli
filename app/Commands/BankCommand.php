@@ -34,7 +34,7 @@ class BankCommand extends Command
      *
      * @var string
      */
-    protected $description = 'List of banks in Nigeria (NG), Ghana (GH), Kenya (KE), Uganda (UG), South Africa (ZA) and Tanzania (TZ) respectively';
+    protected $description = 'List of banks in NG, GH, KE, UG, ZA, TZ respectively';
 
     /**
      * Execute the console command.
