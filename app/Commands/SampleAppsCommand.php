@@ -27,14 +27,14 @@ class SampleAppsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:sampleapp {type?}';
+    protected $signature = 'generate:app {type? : enter your desired sample app}';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Generates a specified sample app for you.';
+    protected $description = 'Generates your desired sample app for you.';
 
     /**
      * initialize inputs
@@ -60,7 +60,7 @@ class SampleAppsCommand extends Command
         $this->line("[charge] <comment>Card and Account Charge Sample App</comment>");
         $this->line("[3dsecure] <comment>3DSecure Payment Sample App</comment>");
         $this->line("[transfers] <comment>Single and Bulk Transfer Sample App</comment>");
-        $this->line("[webhook] <comment>Recieving Response in Webhook</comment>");
+        $this->line("[webhook] <comment>Receiving Response in Webhook</comment>");
         $this->line("[splitpayment] <comment>Split Payments to Different Merchants</comment>");
         $this->line("[subscription] <comment>Subscription Payment using Rave</comment>");
         $this->line("[bills_services] <comment>Bills and Services with Rave</comment>");

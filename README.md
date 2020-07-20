@@ -1,5 +1,6 @@
 <p align="center">
-    <img title="Flutterwave" height="200" src="https://cdn-images-1.medium.com/max/2000/1*9Ns-5XIj1xgGFgZ8t_KkZw.png" />
+    <!-- <img title="Flutterwave" height="200" src="https://cdn-images-1.medium.com/max/2000/1*9Ns-5XIj1xgGFgZ8t_KkZw.png" /> -->
+    <img title="Flutterwave" height="200" src="https://flutterwave.com/images/logo-colored.svg" />
 </p>
 
 ## Flutterwave PHP CLI

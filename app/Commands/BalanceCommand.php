@@ -27,7 +27,7 @@ class BalanceCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'balance {--currency=} {--live}';
+    protected $signature = 'balance {--currency= : currency in ISO (e.g. NGN, GHS, USD, EUR etc)} {--live : Perform request with live credentials}';
 
     /**
      * The description of the command.

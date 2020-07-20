@@ -27,7 +27,7 @@ class DocsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'docs {--feature=default}';
+    protected $signature = 'docs {--feature=default : features of our API you are searching for}';
 
     /**
      * The description of the command.

@@ -13,7 +13,7 @@ class FlutterwaveSetupCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'setup {testSecretKey?} {testPublicKey?} {liveSecretKey?} {livePublicKey?}';
+    protected $signature = 'setup {testSecretKey? : Test Secret Key from your Flutterwave dashboard} {testPublicKey? : Test Public Key from your Flutterwave dashboard} {liveSecretKey? : Live Secret Key from your Flutterwave dashboard} {livePublicKey? : Live Public Key from your Flutterwave dashboard}';
 
     /**
      * The description of the command.

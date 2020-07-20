@@ -27,7 +27,7 @@ class MakePaymentCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'payment {email} {amount} {--currency=} {--live}';
+    protected $signature = 'payment {email : user email} {amount : amount to be paid} {--currency= : currency in IS0 (e.g. NGN, GHS, USD, EUR etc.} {--live : Perform request with live credentials}';
 
     /**
      * The description of the command.

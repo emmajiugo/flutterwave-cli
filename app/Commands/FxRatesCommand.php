@@ -27,7 +27,7 @@ class FxRatesCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'fx:rate {--amount=} {--from=} {--to=} {--live}';
+    protected $signature = 'fx:rate {--amount= : amount for conversion} {--from= : currency to convert from (e.g. NGN, GHS, USD, EUR etc)} {--to= : currency to convert to (e.g. NGN, GHS, USD, EUR etc} {--live : Perform request with live credentials}';
 
     /**
      * The description of the command.
