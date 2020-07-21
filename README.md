@@ -15,7 +15,8 @@ NB: This is a one time setup and your keys are stored in your computer and not s
 ## Usage:
 
 ```
-NOTE: To use your LIVE credential when making a call, add the LIVE tag (--live) to all your commands.
+NOTE: To use your LIVE credential when making a call,  
+add the LIVE tag (--live) to all your commands.
 ```
 
 ### Quickly Open API Documentation for a Feature
