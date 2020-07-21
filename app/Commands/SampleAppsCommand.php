@@ -56,7 +56,7 @@ class SampleAppsCommand extends Command
         $this->info("========================");
         // $this->info("");
 
-        $this->line("[rave_modal] <comment>Modal sample in Inline, Standard and Quick Setup</comment>");
+        $this->line("[modal] <comment>Modal sample in Inline, Standard and Quick Setup</comment>");
         $this->line("[charge] <comment>Card and Account Charge Sample App</comment>");
         $this->line("[3dsecure] <comment>3DSecure Payment Sample App</comment>");
         $this->line("[transfers] <comment>Single and Bulk Transfer Sample App</comment>");

@@ -27,7 +27,7 @@ class BankBranchCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'bank:branch {id : the id returned when listing all banks} {--live : Perform request with live credentials}';
+    protected $signature = 'bank:branch {id : the id is returned when listing all banks} {--live : Perform request with live credentials}';
 
     /**
      * The description of the command.
