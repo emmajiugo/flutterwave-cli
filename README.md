@@ -8,7 +8,8 @@ The Flutterwave CLI application helps you tests some features of Flutterwave on 
 ## Setup:
 1. Download and install [Composer](https://getcomposer.org/download/)
 2. After successful installation of composer, run the command on your terminal `composer global require emmajiugo/flutterwave-cli` to require it globally
-3. Run on your terminal `flutterwave -v` to view the available commands.
+3. Run on your terminal `flutterwave -v` to view the available commands.  
+NB: If you  get the error `command not found`, visit this [stackoverflow page](https://stackoverflow.com/questions/63020670/flutterwave-command-not-working-flutterwave-cli) to read how you can fix it.
 4. Setup your CLI by adding your Flutterwave keys (Test and Live). Run `flutterwave setup`.
 NB: This is a one time setup and your keys are stored in your computer and not sent to any server.
 
