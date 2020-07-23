@@ -15,7 +15,7 @@ class FlutterwaveSetupCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'setup {testSecretKey? : Test Secret Key from your Flutterwave dashboard} {testPublicKey? : Test Public Key from your Flutterwave dashboard} {liveSecretKey? : Live Secret Key from your Flutterwave dashboard} {livePublicKey? : Live Public Key from your Flutterwave dashboard}';
+    protected $signature = 'setup {testSecretKey? : Test Secret Key from your Flutterwave dashboard} {liveSecretKey? : Live Secret Key from your Flutterwave dashboard} {--mac : Configuration for MAC users} {--windows : Configuration for WINDOWS users}';
 
     /**
      * The description of the command.
@@ -48,9 +48,18 @@ class FlutterwaveSetupCommand extends Command
     protected function getKeys()
     {
         $this->liveSecretKey = $this->argument('liveSecretKey');
-        $this->livePublicKey = $this->argument('livePublicKey');
+        // $this->livePublicKey = $this->argument('livePublicKey');
         $this->testSecretKey = $this->argument('testSecretKey');
-        $this->testPublicKey = $this->argument('testPublicKey');
+        // $this->testPublicKey = $this->argument('testPublicKey');
+
+        // check if OS is passed
+        $mac = $this->option('mac');
+        $windows = $this->option('windows');
+
+        if (!$mac && !$windows) {
+            $this->info("\nPlease pass the tag <comment>--mac</comment> (for MAC users) or <comment>--windows</comment> (for WINDOWS users) to allow us setup your ENV variables.\n");
+            exit();
+        }
 
         $this->info("");
         $this->info("FLUTTERWAVE CLI SETUP");
@@ -79,41 +88,33 @@ class FlutterwaveSetupCommand extends Command
 
         }
 
-        //write keys to .env file
-        // $path = getcwd().'/.env'; //get path to .env file
-        // $res = $this->files->isFile($path);
+        // SETUP FIX 2 NB: add a command to get OS from user
+        $externalCommand = "echo 'TEST_SECRET_KEY=".$this->testSecretKey."\nLIVE_SECRET_KEY=".$this->liveSecretKey."'";
 
-        //check if file exists
-        // if (!$res){
+        if ($mac) {
 
-            // create the .env file if it does not exist
-            // $filename = '.env';
-            // $handle = fopen($filename, 'w') or die('cannot open the file');
-            // fclose($handle);
+            shell_exec($externalCommand." >~/.composer/vendor/emmajiugo/flutterwave-cli/builds/.env");
+
+        } else if ($windows) {
+
+            shell_exec($externalCommand." >%APPDATA%\\Composer\\vendor\\emmajiugo\\flutterwave-cli\\builds\\.env");
+
+        }
+
+
+        // SETUP FIX 1
+        // $content = "<?php\nreturn [
+        //     'TEST_SECRET_KEY' => '". $this->testSecretKey ."',
+        //     'LIVE_SECRET_KEY' => '". $this->liveSecretKey ."'\n];";
+
+        // if (Storage::put("FLWCLI/env.php", $content)) {
+        //     $this->comment('Hurray! Flutterwave CLI is ready to use.');
+        // } else {
+        //     $this->error('Oops! something went wrong. Please contact support on this.');
         // }
 
-        // $content0 = '';
-        // $content1 = 'TEST_SECRET_KEY="'. $this->testSecretKey .'"';
-        // $content2 = 'TEST_PUBLIC_KEY="'. $this->testPublicKey .'"';
-        // $content3 = 'LIVE_SECRET_KEY="'. $this->liveSecretKey .'"';
-        // $content4 = 'LIVE_PUBLIC_KEY="'. $this->livePublicKey .'"';
-
-        // //write to the file
-        // $this->files->put($path, $content0);//clear the content of the file
-        // $this->files->append($path, $content1."\n");
-        // $this->files->append($path, $content2."\n");
-        // $this->files->append($path, $content3."\n");
-        // $this->files->append($path, $content4."\n");
-
-        $content = "TEST_SECRET_KEY=". $this->testSecretKey ."\n";
-        $content .= "LIVE_SECRET_KEY=". $this->liveSecretKey;
-
-        if (Storage::put(".env", $content) && Storage::put("builds/.env", $content) ) {
-
-            $this->comment('Hurray! Flutterwave CLI is ready to use.');
-        } else {
-            $this->error('Oops! something went wrong. Please contact support on this.');
-        }
+        // $output = Storage::get("FLWCLI/env.php");
+        // echo $output;
     }
 
     /**

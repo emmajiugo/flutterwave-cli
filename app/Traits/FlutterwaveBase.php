@@ -77,10 +77,10 @@ trait FlutterwaveBase
     public function HttpPost($endpoint, $data, $prod) {
         try {
             if ($prod) {
-                $pkey = $this->livePublicKey;
+                // $pkey = $this->livePublicKey;
                 $skey = $this->liveSecretKey;
             } else {
-                $pkey = $this->testPublicKey;
+                // $pkey = $this->testPublicKey;
                 $skey = $this->testSecretKey;
             }
 
@@ -123,10 +123,10 @@ trait FlutterwaveBase
     public function HttpGet($endpoint, $prod) {
         try {
             if ($prod) {
-                $pkey = $this->livePublicKey;
+                // $pkey = $this->livePublicKey;
                 $skey = $this->liveSecretKey;
             } else {
-                $pkey = $this->testPublicKey;
+                // $pkey = $this->testPublicKey;
                 $skey = $this->testSecretKey;
             }
 
