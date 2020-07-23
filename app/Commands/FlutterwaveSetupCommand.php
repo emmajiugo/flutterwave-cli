@@ -92,16 +92,24 @@ class FlutterwaveSetupCommand extends Command
         $externalCommand = "echo 'TEST_SECRET_KEY=".$this->testSecretKey."\nLIVE_SECRET_KEY=".$this->liveSecretKey."'";
 
         if ($mac) {
-
-            shell_exec($externalCommand." >~/.composer/vendor/emmajiugo/flutterwave-cli/builds/.env");
-
+            $os = " >~/.composer/vendor/emmajiugo/flutterwave-cli/builds/.env";
         } else if ($windows) {
-
-            shell_exec($externalCommand." >%APPDATA%\\Composer\\vendor\\emmajiugo\\flutterwave-cli\\builds\\.env");
-
+            $os = " >%APPDATA%\\Composer\\vendor\\emmajiugo\\flutterwave-cli\\builds\\.env";
         }
 
-        $this->comment('Hurray! Flutterwave CLI is ready to use.');
+        try {
+
+            exec($externalCommand . $os, $output, $return_var);
+
+            if ($return_var > 0) {
+                $this->error('Oops! something went wrong. Please contact support on this.');
+            } else {
+                $this->comment('Hurray! Flutterwave CLI is ready to use.');
+            }
+
+        } catch (\Throwable $th) {
+            $this->error('Oops! something went wrong. Please contact support on this.');
+        }
 
 
         // SETUP FIX 1
