@@ -101,6 +101,8 @@ class FlutterwaveSetupCommand extends Command
 
         }
 
+        $this->comment('Hurray! Flutterwave CLI is ready to use.');
+
 
         // SETUP FIX 1
         // $content = "<?php\nreturn [
