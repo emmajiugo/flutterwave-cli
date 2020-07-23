@@ -19,9 +19,9 @@ trait FlutterwaveBase
      */
     public function __construct()
     {
-        $this->testPublicKey = env('TEST_PUBLIC_KEY');
+        // $this->testPublicKey = env('TEST_PUBLIC_KEY');
         $this->testSecretKey = env('TEST_SECRET_KEY');
-        $this->livePublicKey = env('LIVE_PUBLIC_KEY');
+        // $this->livePublicKey = env('LIVE_PUBLIC_KEY');
         $this->liveSecretKey = env('LIVE_SECRET_KEY');
     }
 

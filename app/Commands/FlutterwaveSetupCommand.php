@@ -2,6 +2,8 @@
 
 namespace App\Commands;
 
+use Storage;
+
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 use Illuminate\Filesystem\Filesystem;
@@ -26,9 +28,9 @@ class FlutterwaveSetupCommand extends Command
      * initialize keys
      */
     private $liveSecretKey;
-    private $livePublicKey;
+    // private $livePublicKey;
     private $testSecretKey;
-    private $testPublicKey;
+    // private $testPublicKey;
     protected $files;
 
     /**
@@ -57,15 +59,15 @@ class FlutterwaveSetupCommand extends Command
 
         if ($this->confirm('Do you wish to continue?')) {
 
-            if (!$this->testPublicKey) {
-                $this->testPublicKey = $this->ask('Enter Flutterwave Test Public Key');
-            }
+            // if (!$this->testPublicKey) {
+            //     $this->testPublicKey = $this->ask('Enter Flutterwave Test Public Key');
+            // }
             if (!$this->testSecretKey) {
                 $this->testSecretKey = $this->ask('Enter Flutterwave Test Secret Key');
             }
-            if (!$this->livePublicKey) {
-                $this->livePublicKey = $this->ask('Enter Flutterwave Live Public Key');
-            }
+            // if (!$this->livePublicKey) {
+            //     $this->livePublicKey = $this->ask('Enter Flutterwave Live Public Key');
+            // }
             if (!$this->liveSecretKey) {
                 $this->liveSecretKey = $this->ask('Enter Flutterwave Live Secret Key');
             }
@@ -78,35 +80,40 @@ class FlutterwaveSetupCommand extends Command
         }
 
         //write keys to .env file
-        $path = getcwd().'/.env'; //get path to .env file
-        $res = $this->files->isFile($path);
+        // $path = getcwd().'/.env'; //get path to .env file
+        // $res = $this->files->isFile($path);
 
         //check if file exists
-        if (!$res){
+        // if (!$res){
 
             // create the .env file if it does not exist
-            $filename = '.env';
-            $handle = fopen($filename, 'w') or die('cannot open the file');
-            fclose($handle);
+            // $filename = '.env';
+            // $handle = fopen($filename, 'w') or die('cannot open the file');
+            // fclose($handle);
+        // }
 
-            // return "Oops! There was an issue. Run 'composer install'.";
+        // $content0 = '';
+        // $content1 = 'TEST_SECRET_KEY="'. $this->testSecretKey .'"';
+        // $content2 = 'TEST_PUBLIC_KEY="'. $this->testPublicKey .'"';
+        // $content3 = 'LIVE_SECRET_KEY="'. $this->liveSecretKey .'"';
+        // $content4 = 'LIVE_PUBLIC_KEY="'. $this->livePublicKey .'"';
+
+        // //write to the file
+        // $this->files->put($path, $content0);//clear the content of the file
+        // $this->files->append($path, $content1."\n");
+        // $this->files->append($path, $content2."\n");
+        // $this->files->append($path, $content3."\n");
+        // $this->files->append($path, $content4."\n");
+
+        $content = "TEST_SECRET_KEY=". $this->testSecretKey ."\n";
+        $content .= "LIVE_SECRET_KEY=". $this->liveSecretKey;
+
+        if (Storage::put(".env", $content) && Storage::put("builds/.env", $content) ) {
+
+            $this->comment('Hurray! Flutterwave CLI is ready to use.');
+        } else {
+            $this->error('Oops! something went wrong. Please contact support on this.');
         }
-
-        $content0 = '';
-        $content1 = 'TEST_SECRET_KEY="'. $this->testSecretKey .'"';
-        $content2 = 'TEST_PUBLIC_KEY="'. $this->testPublicKey .'"';
-        $content3 = 'LIVE_SECRET_KEY="'. $this->liveSecretKey .'"';
-        $content4 = 'LIVE_PUBLIC_KEY="'. $this->livePublicKey .'"';
-
-        //write to the file
-        $this->files->put($path, $content0);//clear the content of the file
-        $this->files->append($path, $content1."\n");
-        $this->files->append($path, $content2."\n");
-        $this->files->append($path, $content3."\n");
-        $this->files->append($path, $content4."\n");
-
-        $this->comment('Hurray! Flutterwave CLI is ready to use.');
-        exit();
     }
 
     /**
@@ -116,8 +123,9 @@ class FlutterwaveSetupCommand extends Command
      */
     public function handle()
     {
-        $result = $this->getKeys();
+        $this->getKeys();
+        // $result = $this->getKeys();
 
-        dd($result);
+        // dd($result);
     }
 }
