@@ -3,57 +3,57 @@ session_start();
 require('library.php');
 
 //set keys
-$secret_key = "FLWSECK-xxxx-X";
-$public_key = "FLWPUBK-xxxx-X";
-$baseurl = "https://ravesandboxapi.flutterwave.com";
+$secret_key = "FLWSECK_TEST-1609ba49bee599841c9a590a97984685-X";
+$public_key = "FLWSECK_TEST-1609ba49bee599841c9a590a97984685-X";
+$encryption_key = "FLWSECK_TEST17ee0fe7bffb";
+$baseurl = "https://api.flutterwave.com";
 $page_status = '';
+//https://api.flutterwave.com/v3/charges?type=card
 
 // initiate transaction
 if (isset($_POST['initiate'])){
     $email = $_POST['email'];
     $amount = $_POST['amount'];
-    $card = $_POST['card'];
-    $month = $_POST['month'];
-    $year = $_POST['year'];
+    $card = $_POST['card_number'];
+    $month = $_POST['expiry_month'];
+    $year = $_POST['expiry_year'];
     $cvv = $_POST['cvv'];
 
     //card payment
     $data = array(
-        'PBFPubKey' => $public_key,
-        'cardno' => $card,
+        'card_number' => $card,
         'currency' => 'NGN',
         'country' => 'NG',
         'cvv' => $cvv,
         // 'pin' => '3310',
         // 'suggested_auth' => 'PIN',
         'amount' => '10',
-        'expiryyear' => $year,
-        'expirymonth' => $month,
+        'expiry_year' => $year,
+        'expiry_month' => $month,
         'redirect_url' => 'https://github.com/emmajiugo',
         'email' => $email,
-        'txRef' => time(),
+        'tx_ref' => time(),
     );
         
     $SecKey = $secret_key;
 
-    $key = getKey($SecKey); 
+    $key = $encryption_key;
     $dataReq = json_encode($data);
     $post_enc = encrypt3Des( $dataReq, $key );
     $postdata = array(
-        'PBFPubKey' => $public_key,
         'client' => $post_enc,
-        'alg' => '3DES-24'
+        
     );
 
     //setup for charg
-    $url = $baseurl."/flwv3-pug/getpaidx/api/charge";
-    $res = postCURL($url, $postdata);
+    $url = $baseurl."/v3/charges?type=card";
+    $res = postCURL($url, $postdata, $secret_key);
 
     // echo "<pre>";
     // print_r($res);
 
-    if ($res['status'] == 'success' && $res['message'] == 'AUTH_SUGGESTION') {
-        $page_status = $res['data']['suggested_auth'];
+    if ($res['status'] == 'success' && $res['message'] == 'Charge initiated') {
+        $page_status = $res['data']['authorization']['mode'];
         $_SESSION['auth'] = $page_status;
         $_SESSION['payload'] = $data;
     } else if ($res['status'] == 'success' && $res['message'] == 'V-COMP') {
@@ -79,20 +79,18 @@ if (isset($_POST['enter_pin'])){
     $dataReq = json_encode($data);
     $post_enc = encrypt3Des( $dataReq, $key );
     $postdata = array(
-        'PBFPubKey' => $public_key,
-        'client' => $post_enc,
-        'alg' => '3DES-24'
+        'client' => $post_enc
     );
 
     //setup for charg
-    $url = $baseurl."/flwv3-pug/getpaidx/api/charge";
-    $res = postCURL($url, $postdata);
+    $url = $baseurl."/v3/charges?type=card";
+    $res = postCURL($url, $postdata, $secret_key);
 
     // echo "<pre>";
     print_r($res);
 
     if ($res['status'] == 'success') {
-        $page_status = 'OTP';
+        $page_status = 'otp';
         $_SESSION['flwref'] = $res['data']['flwRef'];
     }
         
@@ -104,27 +102,26 @@ if (isset($_POST['enter_otp'])){
 
     // get flwref  
     $data = array(
-        'PBFPubKey' => $public_key,
-        'transaction_reference' => $_SESSION['flwref'],
+        'type' => 'card',
+        'flw_ref' => $_SESSION['flwref'],
         'otp' => $otp
     );
 
     //setup for charg
-    $url = $baseurl."/flwv3-pug/getpaidx/api/validatecharge";
-    $res = postCURL($url, $data);
+    $url = $baseurl."/v3/validate-charge";
+    $res = postCURL($url, $data,$secret_key);
 
     // echo "<pre>";
     // print_r($res);
 
-    if ($res['status'] == 'success' && $res['data']['data']['responsecode'] == 00){
+    if ($res['status'] == 'success' && $res['data']['processor_response'] == 'Approved by Financial Institution'){
         //call the verify endpoint
-        $txref = $res['data']['tx']['txRef'];
+        $txref = $res['data']['tx_ref'];
         $data = array(
-            "txref" => $txref,
-            "SECKEY" => $secret_key
+            "tx_ref" => $txref
         );
 
-        $url = $baseurl.'/flwv3-pug/getpaidx/api/v2/verify';
+        $url = $baseurl.'/v3/transactions/'.$id.'/verify';
         $res = postCURL($url, $data);
 
         if ($res['status'] == 'success' && $res['data']['chargecode'] == 00){
@@ -168,7 +165,7 @@ if (isset($_POST['enter_otp'])){
     }
 
     // Ask for pin
-    if($page_status == 'PIN'){
+    if($page_status == 'pin'){
 
 ?>
 
@@ -184,7 +181,7 @@ if (isset($_POST['enter_otp'])){
 
 <?php
 
-    } elseif ($page_status == 'OTP') {
+    } elseif ($page_status == 'otp') {
 
         ?>
 
@@ -213,16 +210,16 @@ if (isset($_POST['enter_otp'])){
                     </div>
                     <div class="form-group">
                         <label for="">Card Number</label>
-                        <input type="text" name="card" class="form-control">
+                        <input type="text" name="card_number" class="form-control">
                     </div>
                     <div class=" row form-group">
                         <div class="col-md-4">
                             <label for="">Expiry Month</label>
-                            <input type="text" name="month" class="form-control">
+                            <input type="text" name="expiry_month" class="form-control">
                         </div>
                         <div class="col-md-4">
                             <label for="">Expiry Year</label>
-                            <input type="text" name="year" class="form-control">
+                            <input type="text" name="expiry_year" class="form-control">
                         </div>
                         <div class="col-md-4">
                             <label for="">CVV</label>

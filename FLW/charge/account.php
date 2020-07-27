@@ -3,14 +3,15 @@ session_start();
 require('library.php');
 
 //set keys
-$secret_key = "FLWSECK-xxxx-X";
-$public_key = "FLWPUBK-xxxx-X";
+$secret_key = "FLWPUBK-8a4df6681c15550f6aaf2fc4a5c6d428-X";
+$public_key = "FLWSECK-fd1cb6456e26d2f12e7da43d0e07e0c1-X";
+$encryption_key = "fd1cb6456e265d0806d619d1";
 $baseurl = "https://ravesandboxapi.flutterwave.com";
 $page_status = '';
-
+$country = 'NG';//charge this for multi-currency
 // get back for direct debit
-$url = $baseurl.'/flwv3-pug/getpaidx/api/flwpbf-banks.js?json=1';
-$banks = getCURL($url);
+$url = $baseurl.'/v3/banks/'.$country;
+$banks = getCURL($url, $secret_key);
 // print_r($banks);
 
 // initiate transaction
@@ -22,39 +23,31 @@ if (isset($_POST['initiate'])){
 
     //card payment
     $data = array(
-        'PBFPubKey' => $public_key,
-        'accountbank' => $bank,
-        'accountnumber' => $accountno,
+        
+        'account_bank' => $bank,
+        'account_number' => $accountno,
         'payment_type' => 'account',
-        'country' => 'NG',
         'currency' => 'NGN',
         'amount' => $amount,
         'redirect_url' => 'https://github.com/emmajiugo',
         'email' => $email,
-        'txRef' => time(),
+        'tx_ref' => time(),
     );
         
-    $SecKey = $secret_key;
-
-    $key = getKey($SecKey); 
-    $dataReq = json_encode($data);
-    $post_enc = encrypt3Des( $dataReq, $key );
-    $postdata = array(
-        'PBFPubKey' => $public_key,
-        'client' => $post_enc,
-        'alg' => '3DES-24'
-    );
-
-    //setup for charg
-    $url = $baseurl."/flwv3-pug/getpaidx/api/charge";
-    $res = postCURL($url, $postdata);
+    //setup for charge
+    if($country == "UK"){
+        $url = $baseurl."/v3/charges?type=debit_uk_account";
+    }else {
+        $url = $baseurl."v3/charges?type=debit_ng_account";
+    }    
+    $res = postCURL($url, $data, $secret_key);
 
     // echo "<pre>";
     // print_r($res);
 
-    if ($res['status'] == 'success') {
-        $page_status = 'OTP';
-        $_SESSION['flwref'] = $res['data']['flwRef'];
+    if ($res['status'] == 'success' && $res['message'] == 'Charge initiated') {
+        $page_status = $res['meta']['authorization']['mode'];
+        $_SESSION['flwref'] = $res['data']['flw_ref'];
     }
         
 }
@@ -65,30 +58,29 @@ if (isset($_POST['enter_otp'])){
 
     // get flwref  
     $data = array(
-        'PBFPubKey' => $public_key,
-        'transactionreference' => $_SESSION['flwref'],
+        'type' => 'account',
+        'flw_ref' => $_SESSION['flwref'],
         'otp' => $otp
     );
 
     //validate account charge
-    $url = $baseurl."/flwv3-pug/getpaidx/api/validate";
+    $url = $baseurl."/v3/validate-charge";
     $res = postCURL($url, $data);
 
     // echo "<pre>";
     // print_r($res);
 
-    if ($res['status'] == 'success' && $res['data']['chargeResponseCode'] == 00){
+    if ($res['status'] == 'success' && $res['message'] == 'Charge validated'){
         //call the verify endpoint
-        $txref = $res['data']['txRef'];
+        $aid = (int)$res['data']['id'];
         $data = array(
-            "txref" => $txref,
-            "SECKEY" => $secret_key
+            "id" => $aid
         );
 
-        $url = $baseurl.'/flwv3-pug/getpaidx/api/v2/verify';
-        $res = postCURL($url, $data);
+        $url = $baseurl.'/v3/transactions/'.$data['id'].'/verify';
+        $res = postCURL($url, $data, $secret_key);
 
-        if ($res['status'] == 'success' && $res['data']['chargecode'] == 00){
+        if ($res['status'] == 'success' && $res['data']['processor_response'] == 'Approved by Financial Institution'){
             $msg = $res['data']['status'];
             echo '<script>console.log('.json_encode($res).');</script>';
         }
@@ -125,7 +117,7 @@ if (isset($_POST['enter_otp'])){
     }
 
     // Ask for otp
-    if ($page_status == 'OTP') {
+    if ($page_status == 'otp') {
 ?>
         <form action="account.php" method="POST">
             <div class="form-group">

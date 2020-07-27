@@ -87,7 +87,7 @@ class Pay{
             //set the payment handler 
             $this->payment->eventHandler(new payEventHandler)
             //set the endpoint for the api call
-            ->setEndPoint("flwv3-pug/getpaidx/api/v2/hosted/pay");
+            ->setEndPoint("v3/payments");
             //returns the value from the results
             return $this->payment->pay($array);
         }

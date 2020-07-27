@@ -25,49 +25,41 @@
 
   </div>
   </div>
-  <script src="https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/flwpbf-inline.js"></script>
-<script>
-    const API_publicKey = "FLWPUBK-xxxxxxxxxxxxxxxxxxx-X";
-    test.addEventListener("click", function(e) {
+  <script src="https://checkout.flutterwave.com/v3.js"></script>
+
+  <script>
+      test.addEventListener("click", function(e) {
         e.preventDefault();
         var email = document.getElementById('email').value;
-        payWithRave(email)
+        makePayment(email)
     })
-
-
-function payWithRave(email) {
-    var x = getpaidSetup({
-        PBFPubKey: API_publicKey,
-        customer_email: email,
-        amount: 2000,
-        currency: "NGN",
-        txref: "rave-123456",
-        meta: [{
-            metaname: "flightID",
-            metavalue: "AP1234"
-        }],
-        onclose: function() {},
-        callback: function(response) {
-            var txref = response.tx.txRef; // collect flwRef returned and pass to a 					server page to complete status check.
-            console.log("This is the response returned after a charge", response);
-            if (
-                response.tx.chargeResponseCode == "00" ||
-                response.tx.chargeResponseCode == "0"
-            ) {
-                // redirect to a success page
-
-                window.location.href = "webhook.php";
-            } else {
-                // redirect to a failure page.
-                alert("Transaction is unsuccessful");
-            }
-
-            x.close(); // use this to close the modal immediately after payment.
+  function makePayment(email) {
+    FlutterwaveCheckout({
+      public_key: "FLWPUBK_TEST-31d61a13026483fc38f15f0e90232374-X",
+      tx_ref: "hooli-tx-1920bbtyt",
+      amount: 600,
+      currency: "NGN",
+      payment_options: "card,mobilemoney,ussd",
+      customer: {
+        email: email,
+        phonenumber: "08102909304",
+        name: "yemi desola",
+      },
+      callback: function (data) { // specified callback function
+        if(data['status'] == 'successful'){
+            window.location.href = "webhook.php";
+        }else{
+            alert("Transaction is unsuccessful");
         }
+      },
+      customizations: {
+        title: "My store",
+        description: "Payment for items in cart",
+        logo: "https://assets.piedpiper.com/logo.png",
+      },
     });
-}
-</script>
-        
+  }
+</script>        
     </body>
 
 </html>

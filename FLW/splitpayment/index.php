@@ -25,68 +25,78 @@
 
   </div>
   </div>
-  <script src="https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/flwpbf-inline.js"></script>
-<script>
-    const API_publicKey = "FLWPUBK-xxxxxxxxxxxxxxxxxxxxxxxx-X";
-    test.addEventListener("click", function(e) {
+  <script src="https://checkout.flutterwave.com/v3.js"></script>
+
+  <script>
+
+test.addEventListener("click", function(e) {
         e.preventDefault();
         var email = document.getElementById('email').value;
-        payWithRave(email)
+        makePayment(email)
     })
 
-
-function payWithRave(email) {
-    var x = getpaidSetup({
-        PBFPubKey: API_publicKey,
-        customer_email: email,
-        amount: 2000,
-        currency: "NGN",
-        txref: "rave-123456",
-        subaccounts: [
+  function makePayment(email) {
+    FlutterwaveCheckout({
+      public_key: "FLWPUBK_TEST-SANDBOXDEMOKEY-X",
+      tx_ref: "hooli-tx-1920bbtyt",
+      amount: 540,
+      currency: "NGN",
+      payment_options: "card, mobilemoneyghana, ussd",
+      redirect_url: // specified redirect URL
+        "https://github.com/emmajiugo",
+      meta: {
+        consumer_id: 23,
+        consumer_mac: "92a3-912ba-1192a",
+      },
+      customer: {
+        email: email,
+        phone_number: "08102909304",
+        name: "yemi desola",
+      },
+      callback: function (data) {
+		console.log(data);
+		if(data['status'] == 'successful'){
+			window.location.href = "verify.php?txid=" + txref;
+		}else{
+			alert("Transaction is unsuccessful");
+		}
+      },
+      onclose: function() {
+        // close modal
+      },
+      subaccounts: [
           {
-            id: "RS_ED071C8796497315BD851F4A0B89DAC9"
+            id: "RS_ED071C8796497315BD851F4A0B89DAC9",
+            transaction_split_ratio: 2,
           },
           
           {
-            id: "RS_1CCEB40AFBC50D0CB3ADAAF102CC974F"
+            id: "RS_1CCEB40AFBC50D0CB3ADAAF102CC974F",
+            transaction_split_ratio: 2,
           },
           {
-            id: "RS_ED071C8796497315BD851F4A0B89DAC9"
+            id: "RS_ED071C8796497315BD851F4A0B89DAC9",
+            transaction_split_ratio: 2,
           },
           
           {
-            id: "RS_1CCEB40AFBC50D0CB3ADAAF102CC974F"
+            id: "RS_1CCEB40AFBC50D0CB3ADAAF102CC974F",
+            transaction_split_ratio: 2,
           },
           {
-            id: "RS_ED071C8796497315BD851F4A0B89DAC9"
+            id: "RS_ED071C8796497315BD851F4A0B89DAC9",
+            transaction_split_ratio: 2,
           }
         ],
-        meta: [{
-            metaname: "flightID",
-            metavalue: "AP1234"
-        }],
-        onclose: function() {},
-        callback: function(response) {
-            var txref = response.tx.txRef; // collect flwRef returned and pass to a 					server page to complete status check.
-            console.log("This is the response returned after a charge", response);
-            if (
-                response.tx.chargeResponseCode == "00" ||
-                response.tx.chargeResponseCode == "0"
-            ) {
-                // redirect to a success page
 
-                window.location.href = "verify.php?txid=" + txref;
-            } else {
-                // redirect to a failure page.
-                alert("Transaction is unsuccessful");
-            }
-
-            x.close(); // use this to close the modal immediately after payment.
-        }
+      customizations: {
+        title: "My store",
+        description: "Payment for items in cart",
+        logo: "https://assets.piedpiper.com/logo.png",
+      },
     });
-}
-</script>
-        
+  }
+</script>        
     </body>
 
 </html>

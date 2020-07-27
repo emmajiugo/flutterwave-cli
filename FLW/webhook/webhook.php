@@ -1,5 +1,10 @@
 <?php
 
+
+echo '<h2>If your transaction was successful, a  POST request from rave should be sent to this Address.</h2>';
+echo '<p>For you to get the hook, Make sure you have setup the webhook on your dashboard</p>';
+echo  'Webhook URL : www.example.com/FLW/webhook.php';
+
 // Retrieve the request's body
 $body = @file_get_contents("php://input");
 

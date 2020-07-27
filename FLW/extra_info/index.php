@@ -182,7 +182,7 @@ if ($production == 'true') {
                         </div>  
 
                         <div>
-                            <button class="btn btn--radius-2 btn--red pull-right" id="continue" type="button" onClick="pay()">Continue >></button>
+                            <button class="btn btn--radius-2 btn--red pull-right" id="continue" type="button" onClick="makePayment()">Continue >></button>
                         </div>
                         <br><br>
                     <!-- </form> -->
@@ -205,14 +205,14 @@ if ($production == 'true') {
 if ($production == 'true') {
 ?>
     <!-- Flutterwave rave live script -->
-    <script type="text/javascript" src="https://api.ravepay.co/flwv3-pug/getpaidx/api/flwpbf-inline.js"></script>
+    <script type="text/javascript" src="https://checkout.flutterwave.com/v3.js"></script>
 <?php
 } 
 
 if ($production == 'false') {
 ?>
     <!-- Flutterwave rave test script -->
-    <script type="text/javascript" src="https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/flwpbf-inline.js"></script>
+    <script type="text/javascript" src="https://checkout.flutterwave.com/v3.js"></script>
 <?php
 }
 ?>
@@ -223,13 +223,9 @@ if ($production == 'false') {
 
     <!-- script goes here -->
     <script>
+  function makePayment() {
 
-        // initiate transaction
-        const API_publicKey = <?php echo json_encode($pkey); ?>;
-        function pay() {
-
-            //set global variables
-            var studentClass = $('#studentclass').val();
+    var studentClass = $('#studentclass').val();
             var firstName = $('#first_name').val();
             var lastName = $('#last_name').val();
             var studentId = $('#student_id').val();
@@ -245,17 +241,17 @@ if ($production == 'false') {
                 // window.location.href = "index.php";
             } else {
 
-                //payload
-                var x = getpaidSetup({
-                    PBFPubKey: API_publicKey,
-                    customer_email: email,
-                    amount: amount,
-                    customer_phone: phone,
-                    customer_firstname: payer,
-                    // customer_lastname: lastName,
-                    currency: "NGN",
-                    txref: "CRN-"+Math.random(),
-                    meta: [
+
+
+    FlutterwaveCheckout({
+      public_key: "<?php echo json_encode($pkey); ?>",
+      tx_ref: "CRN-"+Math.random(),
+      amount: amount,
+      currency: "NGN",
+      payment_options: "card, mobilemoneyghana, ussd",
+      redirect_url: // specified redirect URL
+        "https://github.com/emmajiugo",
+        meta: [
                         {
                             metaname: "nameOfStudent",
                             metavalue: firstName+' '+lastName,
@@ -277,38 +273,40 @@ if ($production == 'false') {
                             metavalue: paymentPurpose
                         }
                     ],
-                    onclose: function() {},
-                    callback: function(response) {
-                        // collect txRef returned and pass to a server page to complete status check.
-                        var txref = response.tx.txRef; 
+      customer: {
+        email: email,
+        phone_number: phone,
+        name: payer,
+      },
+      callback: function (data) {
+		console.log(data);
+		if(data['status'] == 'successful'){
+            txref = data['txref'];
+            amount = data['amount'];
+            id = data['transaction_id']
+            verifyPayment(txref, amount, id);
+		}else{
+            alert('We are sorry, payment didn\' go through!');
+		}
+      },
+      onclose: function() {
+        // close modal
+      },
+      customizations: {
+        title: "My store",
+        description: "Payment for items in cart",
+        logo: "https://assets.piedpiper.com/logo.png",
+      },
+    });
+  }
+}
 
-                        console.log("This is the response returned after a charge", response);
-                        if (
-                            response.tx.chargeResponseCode == "00" ||
-                            response.tx.chargeResponseCode == "0"
-                        ) {
-                            // call the verify function
-                            verifyPayment(txref, amount);
-                        } else {
-                            // alert wrong payment
-                            alert('We are sorry, payment didn\' go through!');
-                        }
+function verifyPayment(txref, amount, transaction_id) {
 
-                        x.close(); // use this to close the modal immediately after payment.
-                    }
-                });
-            }
-        }
+window.location.href = "verify.php?txref="+txref+"&amount="+amount+"&id="+transaction_id;
 
-        // verify payment
-        function verifyPayment(txref, amount) {
-
-            window.location.href = "verify.php?txref="+txref+"&amount="+amount;
-
-        }
-        
-    </script>
-
+}
+</script>
 </body>
 
 </html>

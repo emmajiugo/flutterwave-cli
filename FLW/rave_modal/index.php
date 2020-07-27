@@ -1,5 +1,8 @@
 <?php
 
+$secret_key = "FLWSECK-xxxx-X";
+$public_key = "FLWPUBK-xxxx-X";
+
 if (isset($_POST['standard'])) {
 	echo "Getting the standard";
 
@@ -10,7 +13,7 @@ if (isset($_POST['standard'])) {
 	$currency = "NGN";
 	$txref = "rave-29933838"; // ensure you generate unique references per transaction.
 	$PBFPubKey = "FLWPUBK-xxxxx-X"; // get your public key from the dashboard.
-	$redirect_url = "http://localhost/rave-test/pay-verify.php";
+	$redirect_url = "http://localhost/FLW/rave_modal/pay-verify.php";
 
 	$array = array(
 		array(
@@ -22,24 +25,30 @@ if (isset($_POST['standard'])) {
 			'metavalue' => '4567890'
 		)
 	);
-
+	$token = 'Bearer '.$secret_key;
 
 	curl_setopt_array($curl, array(
-	CURLOPT_URL => "https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/v2/hosted/pay",
+	CURLOPT_URL => "https://api.flutterwave.com/v3/payments",
 	CURLOPT_RETURNTRANSFER => true,
 	CURLOPT_CUSTOMREQUEST => "POST",
 	CURLOPT_POSTFIELDS => json_encode([
 		'amount'=>$amount,
-		'customer_email'=>$customer_email,
+		'customer'=>[ 'email' => 'olaobaju@gmail.com'],
 		'currency'=>$currency,
-		'txref'=>$txref,
-		'PBFPubKey'=>$PBFPubKey,
+		'payment_options'=> 'card,mobilemoney,ussd',
+		'tx_ref'=>$txref,
 		'redirect_url'=>$redirect_url,
 		'meta'=> $array,
+		'customizations' => [
+			"title" => "Pied Piper Payments",
+			"description" => "Middleout isn't free. Pay the price",
+			"logo" => "https://assets.piedpiper.com/logo.png"
+		]
 	]),
 	CURLOPT_HTTPHEADER => [
 		"content-type: application/json",
-		"cache-control: no-cache"
+		"cache-control: no-cache",
+		"Authorization: ".$token
 	],
 	));
 
@@ -69,30 +78,15 @@ if (isset($_POST['standard'])) {
 
 ?>
 
-<!-- Rave Modal Quick setup with data attributes -->
-<form>
-    <a class="flwpug_getpaid"
-       data-PBFPubKey="FLWPUBK-xxxx-X"
-       data-txref="ravetxref-2522766472"
-       data-amount="1"
-       data-customer_email="test@test.com"
-       data-currency="EUR"
-       data-country="NG"
-       data-custom_title="Clinibella Limited"
-       data-custom_description=""
-       data-redirect_url="https://www.apsp.biz/pay/Rave/RedirectUser.aspx"
-       data-payment_method="both">
-    </a>
-    <script src="https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/flwpbf-inline.js"></script>
-</form>
+
 
 <!-- Rave Inline Modal -->
 <form role="form">
 	<div>
 		<br><br><br>
-		<script type="text/javascript" src="https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/flwpbf-inline.js"></script>
+		<script type="text/javascript" src="https://checkout.flutterwave.com/v3.js"></script>
 		<!-- <script type="text/javascript" src="https://api.ravepay.co/flwv3-pug/getpaidx/api/flwpbf-inline.js"></script> -->
-		<button type="button" onClick="payWithRave()"> Pay Inline Modal </button>
+		<button type="button" onClick="makePayment()"> Pay Inline Modal </button>
 	</div>
 </form>
 
@@ -101,38 +95,48 @@ if (isset($_POST['standard'])) {
 	<button type="submit" name="standard"> Pay Standard Modal </button>
 </form>
 
-
 <script>
-	const API_publicKey = "FLWPUBK-xxxxx-X";
-	//var email = document.getElementById('email').value;
-	function payWithRave() {
-
-		var x = getpaidSetup({
-			PBFPubKey: API_publicKey,
-			customer_email: 'emma@gmail.com', //email,
-			amount: 30,
-			currency: "NGN",
-			txref: "<?=uniqid(rand(0,1000)); ?>",
-			payment_plan: 1494,
-			redirect_url: 'https://github.com/emmajiugo',
-
-			onclose: function() {
-			},
-			callback: function(response) {
-				var txref = response.tx.txRef; // collect flwRef returned and pass to a server page to complete status check.
-				console.log("This is the response returned after a charge", response);
-				if (
-					response.tx.chargeResponseCode == "00" ||
-					response.tx.chargeResponseCode == "0"
-				) {
-					window.location.href='pay-verify.php?txref='+txref;
-				} else {
-					// redirect to a failure page.
-					alert('Failed');
-				}
-
-				x.close(); // use this to close the modal immediately after payment.
-			}
-		});
-	}
+  function makePayment() {
+    FlutterwaveCheckout({
+      public_key: "<?php echo $public_key; ?>",
+      tx_ref: "hooli-tx-1920bbtyt",
+      amount: 540,
+      currency: "NGN",
+      payment_options: "card, mobilemoneyghana, ussd",
+      redirect_url: // specified redirect URL
+        "https://github.com/bajoski34",
+      meta: {
+        consumer_id: 23,
+        consumer_mac: "92a3-912ba-1192a",
+      },
+      customer: {
+        email: "emma@gmail.com",
+        phone_number: "08102909304",
+        name: "yemi desola",
+      },
+      callback: function (data) {
+		console.log(data);
+		if(data['status'] == 'successful'){
+			let txref= data['txref'];
+			let id = data['transaction_id'];
+			window.location.href='pay-verify.php?txref='+txref+'&id='+id;
+		}else{
+			alert('Failed');
+		}
+      },
+      onclose: function() {
+        // close modal
+      },
+      customizations: {
+        title: "My store",
+        description: "Payment for items in cart",
+        logo: "https://assets.piedpiper.com/logo.png",
+      },
+    });
+  }
 </script>
+
+
+
+
+

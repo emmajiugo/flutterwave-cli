@@ -82,7 +82,7 @@ class Transfer {
             //set the payment handler 
             $this->transfer->eventHandler(new transferEventHandler)
             //set the endpoint for the api call
-            ->setEndPoint("v2/gpx/transfers/create");
+            ->setEndPoint("v3/transfers");
             //returns the value from the results
             return $this->transfer->transferSingle($array);
         }
@@ -91,7 +91,7 @@ class Transfer {
             //set the payment handler 
             $this->transfer->eventHandler(new transferEventHandler)
             //set the endpoint for the api call
-            ->setEndPoint("v2/gpx/transfers/create_bulk");
+            ->setEndPoint("v3/bulk-transfers");
             //returns the value from the results
             return $this->transfer->transferBulk($array);
         }
@@ -100,7 +100,8 @@ class Transfer {
         //set the payment handler 
         $this->transfer->eventHandler(new transferEventHandler)
         //set the endpoint for the api call
-        ->setEndPoint("v2/gpx/balance");
+        ->setEndPoint("v3/balances/currency");
+        // v3/balances/currency
         //returns the value from the results
         return $this->transfer->getBalance($array);
     }
