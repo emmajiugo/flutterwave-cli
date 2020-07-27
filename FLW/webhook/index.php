@@ -35,11 +35,11 @@
     })
   function makePayment(email) {
     FlutterwaveCheckout({
-      public_key: "FLWPUBK_TEST-31d61a13026483fc38f15f0e90232374-X",
+      public_key: "FLWSECK_TEST-SANDBOXDEMOKEY-X",
       tx_ref: "hooli-tx-1920bbtyt",
       amount: 600,
       currency: "NGN",
-      payment_options: "card,mobilemoney,ussd",
+      payment_options: "card",
       customer: {
         email: email,
         phonenumber: "08102909304",
@@ -55,7 +55,7 @@
       customizations: {
         title: "My store",
         description: "Payment for items in cart",
-        logo: "https://assets.piedpiper.com/logo.png",
+        logo: "https://www.designevo.com/images/home/3d-green-letter-o.png",
       },
     });
   }
