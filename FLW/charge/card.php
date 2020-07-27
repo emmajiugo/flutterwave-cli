@@ -25,12 +25,10 @@ if (isset($_POST['initiate'])){
         'currency' => 'NGN',
         'country' => 'NG',
         'cvv' => $cvv,
-        // 'pin' => '3310',
-        // 'suggested_auth' => 'PIN',
         'amount' => '10',
         'expiry_year' => $year,
         'expiry_month' => $month,
-        'redirect_url' => 'https://github.com/emmajiugo',
+        'redirect_url' => 'https://useyoururl.com',
         'email' => $email,
         'tx_ref' => time(),
     );
@@ -44,7 +42,7 @@ if (isset($_POST['initiate'])){
         'client' => $post_enc
     );
 
-    //setup for charg
+    //setup for charge
     $url = $baseurl."/v3/charges?type=card";
     $res = postCURL($url, $postdata);
 
@@ -77,12 +75,9 @@ if (isset($_POST['enter_pin'])){
         'client' => $post_enc
     );
 
-    //setup for charg
+    //setup for charge
     $url = $baseurl."/v3/charges?type=card";
     $res = postCURL($url, $postdata, $secret_key);
-
-    // echo "<pre>";
-    // print_r($res);
 
     if ($res['status'] == 'success') {
         $page_status = $res['meta']['authorization']['mode'];
@@ -103,19 +98,15 @@ if (isset($_POST['enter_otp'])){
         'otp' => $otp
     );
 
-    //setup for charg
+    //setup for charge
     $url = $baseurl."/v3/validate-charge";
     $res = postCURL($url, $data, $secret_key);
-
-    // echo "<pre>";
-    // print_r($res);
 
     if ($res['status'] == 'success' && $res['data']['processor_response'] == 'Approved by Financial Institution'){
         //call the verify endpoint
         $prid = $res['data']['id'];
         $data = array(
             "id" => (int)$prid,
-            
         );
 
         $url = $baseurl.'/v3/transactions/'.$data['id'].'/verify';

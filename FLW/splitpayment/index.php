@@ -41,9 +41,9 @@ test.addEventListener("click", function(e) {
       tx_ref: "hooli-tx-1920bbtyt",
       amount: 540,
       currency: "NGN",
-      payment_options: "card, mobilemoneyghana, ussd",
+      payment_options: "card, ussd",
       redirect_url: // specified redirect URL
-        "https://github.com/emmajiugo",
+        "https://useyoururl.com",
       meta: {
         consumer_id: 23,
         consumer_mac: "92a3-912ba-1192a",
@@ -92,7 +92,7 @@ test.addEventListener("click", function(e) {
       customizations: {
         title: "My store",
         description: "Payment for items in cart",
-        logo: "https://assets.piedpiper.com/logo.png",
+        logo: "https://www.designevo.com/images/home/3d-green-letter-o.png",
       },
     });
   }

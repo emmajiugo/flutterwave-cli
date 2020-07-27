@@ -42,8 +42,6 @@ if (isset($_POST['initiate'])){
     }    
     $res = postCURL($url, $data, $secret_key);
 
-    // echo "<pre>";
-    // print_r($res);
 
     if ($res['status'] == 'success' && $res['message'] == 'Charge initiated') {
         $page_status = $res['meta']['authorization']['mode'];
@@ -66,9 +64,6 @@ if (isset($_POST['enter_otp'])){
     //validate account charge
     $url = $baseurl."/v3/validate-charge";
     $res = postCURL($url, $data);
-
-    // echo "<pre>";
-    // print_r($res);
 
     if ($res['status'] == 'success' && $res['message'] == 'Charge validated'){
         //call the verify endpoint

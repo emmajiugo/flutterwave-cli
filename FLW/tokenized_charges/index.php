@@ -28,8 +28,6 @@ if (isset($_POST['charge'])) {
 
     $res = postCURL($url, $data, $secret_key);
     $msg = $res['message'];
-
-    // print_r($res);
 }
 ?>
 

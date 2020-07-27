@@ -8,7 +8,6 @@ $public_key = "FLWSECK_TEST-1609ba49bee599841c9a590a97984685-X";
 $encryption_key = "FLWSECK_TEST17ee0fe7bffb";
 $baseurl = "https://api.flutterwave.com";
 $page_status = '';
-//https://api.flutterwave.com/v3/charges?type=card
 
 // initiate transaction
 if (isset($_POST['initiate'])){
@@ -25,8 +24,6 @@ if (isset($_POST['initiate'])){
         'currency' => 'NGN',
         'country' => 'NG',
         'cvv' => $cvv,
-        // 'pin' => '3310',
-        // 'suggested_auth' => 'PIN',
         'amount' => '10',
         'expiry_year' => $year,
         'expiry_month' => $month,
@@ -42,15 +39,11 @@ if (isset($_POST['initiate'])){
     $post_enc = encrypt3Des( $dataReq, $key );
     $postdata = array(
         'client' => $post_enc,
-        
     );
 
-    //setup for charg
+    //setup for charge
     $url = $baseurl."/v3/charges?type=card";
     $res = postCURL($url, $postdata, $secret_key);
-
-    // echo "<pre>";
-    // print_r($res);
 
     if ($res['status'] == 'success' && $res['message'] == 'Charge initiated') {
         $page_status = $res['data']['authorization']['mode'];
@@ -82,11 +75,10 @@ if (isset($_POST['enter_pin'])){
         'client' => $post_enc
     );
 
-    //setup for charg
+    //setup for charge
     $url = $baseurl."/v3/charges?type=card";
     $res = postCURL($url, $postdata, $secret_key);
 
-    // echo "<pre>";
     print_r($res);
 
     if ($res['status'] == 'success') {
@@ -107,12 +99,9 @@ if (isset($_POST['enter_otp'])){
         'otp' => $otp
     );
 
-    //setup for charg
+    //setup for charge
     $url = $baseurl."/v3/validate-charge";
     $res = postCURL($url, $data,$secret_key);
-
-    // echo "<pre>";
-    // print_r($res);
 
     if ($res['status'] == 'success' && $res['data']['processor_response'] == 'Approved by Financial Institution'){
         //call the verify endpoint
