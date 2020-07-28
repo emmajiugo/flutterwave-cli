@@ -1,12 +1,20 @@
 <?php
+require "vendor/autoload.php";
+
+// load the .env
+$dotenv = new Dotenv\Dotenv(__DIR__);
+$dotenv->load();
+
 session_start();
 require('library.php');
 
+
+
 //set keys
-$secret_key = "FLWPUBK-8a4df6681c15550f6aaf2fc4a5c6d428-X";
-$public_key = "FLWSECK-fd1cb6456e26d2f12e7da43d0e07e0c1-X";
-$encryption_key = "fd1cb6456e265d0806d619d1";
-$baseurl = "https://ravesandboxapi.flutterwave.com";
+$secret_key = getenv('SECRET_KEY');
+$public_key = getenv('PUBLIC_KEY');
+$encryption_key = getenv('ENCRYPTION_KEY');
+$baseurl = "https://api.flutterwave.com";
 $page_status = '';
 
 // initiate transaction
@@ -20,22 +28,21 @@ if (isset($_POST['initiate'])){
 
     //card payment
     $data = array(
-        'PBFPubKey' => $public_key,
-        'cardno' => $card,
+        'card_number' => $card,
         'currency' => 'NGN',
         'country' => 'NG',
         'cvv' => $cvv,
         'amount' => '10',
         'expiry_year' => $year,
         'expiry_month' => $month,
-        'redirect_url' => 'https://useyoururl.com',
+        'redirect_url' => 'https://github.com/emmajiugo',
         'email' => $email,
         'tx_ref' => time(),
     );
         
     $SecKey = $secret_key;
 
-    $key = getKey($SecKey); 
+    $key = $encryption_key;
     $dataReq = json_encode($data);
     $post_enc = encrypt3Des( $dataReq, $key );
     $postdata = array(
@@ -44,15 +51,18 @@ if (isset($_POST['initiate'])){
 
     //setup for charge
     $url = $baseurl."/v3/charges?type=card";
-    $res = postCURL($url, $postdata);
+    $res = postCURL($url, $postdata, $secret_key);
 
-    // echo "<pre>";
-    // print_r($res);
+    echo "<pre>";
+    print_r($res);
+    echo "</pre>";
 
     if ($res['status'] == 'success') {
         $page_status = $res['data']['authorization']['mode'];
         $_SESSION['auth'] = $page_status;
         $_SESSION['payload'] = $data;
+    }else{
+        $msg_err = $res['message'];
     }
         
 }
@@ -98,19 +108,16 @@ if (isset($_POST['enter_otp'])){
         'otp' => $otp
     );
 
-    //setup for charge
+    //setup for charg
     $url = $baseurl."/v3/validate-charge";
     $res = postCURL($url, $data, $secret_key);
 
-    if ($res['status'] == 'success' && $res['data']['processor_response'] == 'Approved by Financial Institution'){
+    if ($res['status'] == 'success'){
         //call the verify endpoint
         $prid = $res['data']['id'];
-        $data = array(
-            "id" => (int)$prid,
-        );
-
-        $url = $baseurl.'/v3/transactions/'.$data['id'].'/verify';
-        $res = postCURL($url, $data, $secret_key);
+        
+        $url = $baseurl.'/v3/transactions/'.$prid.'/verify';
+        $res = getCURL($url,$secret_key);
 
         if ($res['status'] == 'success' && $res['data']['status'] == 'successful'){
             $msg = $res['data']['status'];
@@ -147,6 +154,12 @@ if (isset($_POST['enter_otp'])){
     if (isset($msg)){
         echo '<div class="alert alert-success" role="alert">
             Transaction status: <strong>'.$msg.'</strong>. You can check for full response in your console.
+        </div>';
+    }
+
+    if (isset($msg_err)){
+        echo '<div class="alert alert-danger" role="alert">
+            '.$msg_err.'
         </div>';
     }
 
