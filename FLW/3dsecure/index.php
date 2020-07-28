@@ -1,13 +1,23 @@
 <?php
+require "vendor/autoload.php";
+
+// load the .env
+$dotenv = new Dotenv\Dotenv(__DIR__);
+$dotenv->load();
+
 session_start();
 require('library.php');
 
 //set keys
-$secret_key = "FLWSECK_TEST-1609ba49bee599841c9a590a97984685-X";
-$public_key = "FLWSECK_TEST-1609ba49bee599841c9a590a97984685-X";
-$encryption_key = "FLWSECK_TEST17ee0fe7bffb";
+$secret_key = getenv('SECRET_KEY');
+$public_key = getenv('PUBLIC_KEY');
+$encryption_key = getenv('ENCRYPTION_KEY');
+
 $baseurl = "https://api.flutterwave.com";
+//$baseurl = "https://ravesandboxapi.flutterwave.com";
+
 $page_status = '';
+//https://api.flutterwave.com/v3/charges?type=card
 
 // initiate transaction
 if (isset($_POST['initiate'])){
@@ -24,12 +34,14 @@ if (isset($_POST['initiate'])){
         'currency' => 'NGN',
         'country' => 'NG',
         'cvv' => $cvv,
+        // 'pin' => '3310',
+        // 'suggested_auth' => 'PIN',
         'amount' => '10',
         'expiry_year' => $year,
         'expiry_month' => $month,
         'redirect_url' => 'https://github.com/emmajiugo',
         'email' => $email,
-        'tx_ref' => time(),
+        'tx_ref' => 'Yes-'.time(),
     );
         
     $SecKey = $secret_key;
@@ -39,20 +51,27 @@ if (isset($_POST['initiate'])){
     $post_enc = encrypt3Des( $dataReq, $key );
     $postdata = array(
         'client' => $post_enc,
+        
     );
 
-    //setup for charge
+    //setup for charg
     $url = $baseurl."/v3/charges?type=card";
     $res = postCURL($url, $postdata, $secret_key);
 
-    if ($res['status'] == 'success' && $res['message'] == 'Charge initiated') {
-        $page_status = $res['data']['authorization']['mode'];
+    echo "<pre>";
+    print_r($res);
+    echo "</pre>";
+
+    if ($res['status'] == 'success' && $res['message'] == 'Charge initiated'&& $res['meta']['authorization']['mode'] != 'redirect') {
+        $page_status = $res['meta']['authorization']['mode'];
         $_SESSION['auth'] = $page_status;
         $_SESSION['payload'] = $data;
-    } else if ($res['status'] == 'success' && $res['message'] == 'V-COMP') {
-        $url = $res['data']['authurl'];
+    } else if ($res['status'] == 'success' && $res['meta']['authorization']['mode'] == 'redirect') {
+        $url = $res['meta']['authorization']['redirect'];
         echo "<script>window.location.href = '$url'</script>";
         
+    }else{
+            $msg_err = $res['message'];
     }
         
 }
@@ -63,8 +82,8 @@ if (isset($_POST['enter_pin'])){
 
     //push into payload array
     $data = $_SESSION['payload'];
-    $data['pin'] = $pin;
-    $data['suggested_auth'] = $_SESSION['auth'];    
+    $data['authorization']['pin'] = $pin;
+    $data['authorization']['mode'] = $_SESSION['auth'];    
         
     $SecKey = $secret_key;
 
@@ -75,10 +94,11 @@ if (isset($_POST['enter_pin'])){
         'client' => $post_enc
     );
 
-    //setup for charge
+    //setup for charg
     $url = $baseurl."/v3/charges?type=card";
     $res = postCURL($url, $postdata, $secret_key);
 
+    // echo "<pre>";
     print_r($res);
 
     if ($res['status'] == 'success') {
@@ -99,9 +119,12 @@ if (isset($_POST['enter_otp'])){
         'otp' => $otp
     );
 
-    //setup for charge
+    //setup for charg
     $url = $baseurl."/v3/validate-charge";
     $res = postCURL($url, $data,$secret_key);
+
+    // echo "<pre>";
+    // print_r($res);
 
     if ($res['status'] == 'success' && $res['data']['processor_response'] == 'Approved by Financial Institution'){
         //call the verify endpoint
@@ -111,9 +134,9 @@ if (isset($_POST['enter_otp'])){
         );
 
         $url = $baseurl.'/v3/transactions/'.$id.'/verify';
-        $res = postCURL($url, $data);
+        $res = postCURL($url, $data , $secret_key);
 
-        if ($res['status'] == 'success' && $res['data']['chargecode'] == 00){
+        if ($res['status'] == 'success'){
             $msg = $res['data']['status'];
             echo '<script>console.log('.json_encode($res).');</script>';
         }
@@ -139,7 +162,7 @@ if (isset($_POST['enter_otp'])){
                     <b>Test with the below test card:</b><br>
                     4242424242424242 <br>
                     cvv 812 <br>
-                    Expiry: 01/19 <br>
+                    Expiry: 01/31 <br>
                 </p>
 
                 <p style="text-align: left; color: green">Note that the response will be appended to your provided redirect_url. You can use the $_GET to retrieve the response and verify the transaction before given any value.</p>
@@ -150,6 +173,12 @@ if (isset($_POST['enter_otp'])){
     if (isset($msg)){
         echo '<div class="alert alert-success" role="alert">
             Transaction status: <strong>'.$msg.'</strong>. You can check for full response in your console.
+        </div>';
+    }
+
+    if (isset($msg_err)){
+        echo '<div class="alert alert-danger" role="alert">
+            '.$msg_err.'
         </div>';
     }
 
