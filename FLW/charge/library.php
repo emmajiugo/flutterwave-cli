@@ -21,7 +21,7 @@ function encrypt3Des($data, $key)
 // Encryption Ends
 
 //post CURL
-function postCURL($url, $data) {
+function postCURL($url, $data,$seckey) {
     $ch = curl_init();
 
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -31,7 +31,8 @@ function postCURL($url, $data) {
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 200);
     curl_setopt($ch, CURLOPT_TIMEOUT, 200);
 
-    $headers = array('Content-Type: application/json');
+    $token = 'Bearer '.$seckey;
+    $headers = array('Content-Type: application/json','Authorization:'.$token);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
     $request = curl_exec($ch);
@@ -41,9 +42,10 @@ function postCURL($url, $data) {
 }
 
 //get CURL
-function getCURL($url) {
+function getCURL($url, $seckey) {
     $curl = curl_init();
-    $header = array("Content-Type: application/json");
+    $token = 'Bearer '.$seckey;
+    $header = array('Content-Type: application/json','Authorization:'.$token);
     curl_setopt_array($curl, array(
         CURLOPT_URL => $url,
         CURLOPT_CUSTOMREQUEST => "GET",

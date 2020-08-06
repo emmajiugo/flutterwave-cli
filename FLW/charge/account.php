@@ -1,17 +1,26 @@
 <?php
+require "vendor/autoload.php";
+
+// load the .env
+$dotenv = new Dotenv\Dotenv(__DIR__);
+$dotenv->load();
+
 session_start();
 require('library.php');
 
 //set keys
-$secret_key = "FLWSECK-xxxx-X";
-$public_key = "FLWPUBK-xxxx-X";
-$baseurl = "https://ravesandboxapi.flutterwave.com";
+$secret_key = getenv('SECRET_KEY');
+$public_key = getenv('PUBLIC_KEY');
+$encryption_key = getenv('ENCRYPTION_KEY');
+$baseurl = "https://api.flutterwave.com";
 $page_status = '';
+$country = 'NG';//charge this for multi-currency
 
 // get back for direct debit
-$url = $baseurl.'/flwv3-pug/getpaidx/api/flwpbf-banks.js?json=1';
-$banks = getCURL($url);
-// print_r($banks);
+$url = $baseurl.'/v3/banks/'.$country;
+$result = getCURL($url, $secret_key);
+$banks = $result['data'];
+
 
 // initiate transaction
 if (isset($_POST['initiate'])){
@@ -22,39 +31,27 @@ if (isset($_POST['initiate'])){
 
     //card payment
     $data = array(
-        'PBFPubKey' => $public_key,
-        'accountbank' => $bank,
-        'accountnumber' => $accountno,
+        'account_bank' => $bank,
+        'account_number' => $accountno,
         'payment_type' => 'account',
-        'country' => 'NG',
         'currency' => 'NGN',
         'amount' => $amount,
         'redirect_url' => 'https://github.com/emmajiugo',
         'email' => $email,
-        'txRef' => time(),
+        'tx_ref' => time(),
     );
         
-    $SecKey = $secret_key;
+    //setup for charge
+    if($country == "UK"){
+        $url = $baseurl."/v3/charges?type=debit_uk_account";
+    }else {
+        $url = $baseurl."/v3/charges?type=debit_ng_account";
+    }    
+    $res = postCURL($url, $data, $secret_key);
 
-    $key = getKey($SecKey); 
-    $dataReq = json_encode($data);
-    $post_enc = encrypt3Des( $dataReq, $key );
-    $postdata = array(
-        'PBFPubKey' => $public_key,
-        'client' => $post_enc,
-        'alg' => '3DES-24'
-    );
-
-    //setup for charg
-    $url = $baseurl."/flwv3-pug/getpaidx/api/charge";
-    $res = postCURL($url, $postdata);
-
-    // echo "<pre>";
-    // print_r($res);
-
-    if ($res['status'] == 'success') {
-        $page_status = 'OTP';
-        $_SESSION['flwref'] = $res['data']['flwRef'];
+    if ($res['status'] == 'success' && $res['message'] == 'Charge initiated') {
+        $page_status = $res['data']['meta']['authorization']['mode'];
+        $_SESSION['flwref'] = $res['data']['flw_ref'];
     }
         
 }
@@ -65,30 +62,23 @@ if (isset($_POST['enter_otp'])){
 
     // get flwref  
     $data = array(
-        'PBFPubKey' => $public_key,
-        'transactionreference' => $_SESSION['flwref'],
+        'type' => 'account',
+        'flw_ref' => $_SESSION['flwref'],
         'otp' => $otp
     );
 
     //validate account charge
-    $url = $baseurl."/flwv3-pug/getpaidx/api/validate";
-    $res = postCURL($url, $data);
+    $url = $baseurl."/v3/validate-charge";
+    $res = postCURL($url, $data, $secret_key);
 
-    // echo "<pre>";
-    // print_r($res);
-
-    if ($res['status'] == 'success' && $res['data']['chargeResponseCode'] == 00){
+    if ($res['status'] == 'success' && $res['message'] == 'Charge validated'){
         //call the verify endpoint
-        $txref = $res['data']['txRef'];
-        $data = array(
-            "txref" => $txref,
-            "SECKEY" => $secret_key
-        );
+        $aid = $res['data']['id'];
 
-        $url = $baseurl.'/flwv3-pug/getpaidx/api/v2/verify';
-        $res = postCURL($url, $data);
+        $url = $baseurl.'/v3/transactions/'.$aid.'/verify';
+        $res = getCURL($url,$secret_key);
 
-        if ($res['status'] == 'success' && $res['data']['chargecode'] == 00){
+        if ($res['status'] == 'success'){
             $msg = $res['data']['status'];
             echo '<script>console.log('.json_encode($res).');</script>';
         }
@@ -125,7 +115,7 @@ if (isset($_POST['enter_otp'])){
     }
 
     // Ask for otp
-    if ($page_status == 'OTP') {
+    if ($page_status == 'otp') {
 ?>
         <form action="account.php" method="POST">
             <div class="form-group">
@@ -156,7 +146,7 @@ if (isset($_POST['enter_otp'])){
                             <option value="">-- select bank --</option>
                             <?php
                             foreach($banks as $bank){
-                                echo '<option value="'.$bank['bankcode'].'">'.$bank['bankname'].'</option>';
+                                echo '<option value="'.$bank['code'].'">'.$bank['name'].'</option>';
                             }
                             ?>
                         </select>

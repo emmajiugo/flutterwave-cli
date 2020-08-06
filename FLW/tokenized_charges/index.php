@@ -4,7 +4,7 @@ require('library.php');
 //set keys
 $secret_key = "FLWSECK-xxxx-X";
 $public_key = "FLWPUBK-xxxx-X";
-$baseurl = "https://ravesandboxapi.flutterwave.com";
+$baseurl = "https://api.flutterwave.com";
 
 $cards = array(
     '5399xxxxxx8381' => 'flw-t0-48f5cde294a70de4b40bf2bac8bcf75f-m03k',
@@ -14,23 +14,20 @@ $cards = array(
 if (isset($_POST['charge'])) {
     $token = $_POST['token'];
 
-    $url = $baseurl."/flwv3-pug/getpaidx/api/tokenized/charge";
+    $url = $baseurl."/v3/tokenized-charges";
     $data = array(
         "currency" => "NGN",
-        "SECKEY" => $secret_key,
         "token" => $token,
         "country" => "NG",
         "amount" => 100,
         "email" => "e@x.com",
-        "firstname" => "temi",
-        "lastname" => "Oyekole",
-        "txRef" => time()
+        "first_name" => "temi",
+        "last_name" => "Oyekole",
+        "tx_ref" => time()
     );
 
-    $res = postCURL($url, $data);
+    $res = postCURL($url, $data, $secret_key);
     $msg = $res['message'];
-
-    // print_r($res);
 }
 ?>
 

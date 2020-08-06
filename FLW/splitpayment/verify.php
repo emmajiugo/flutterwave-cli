@@ -4,20 +4,20 @@ if(!empty($_GET['txid'])) {
     $txid = $_GET['txid'];
     //call the verify endpoint
     $data = [
-        'txref' => $txid,
-        'SECKEY' => 'FLWSECK-xxxxxxxxxxxxxxxxxxxxxxxxxxxx-X'
+        'id' => $_GET['id']
     ];
+    $token = 'Bearer '.$seckey;
     $curl = curl_init();
     curl_setopt_array($curl, array(
-        CURLOPT_URL => "https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/v2/verify",
+        CURLOPT_URL => 'https://api.flutterwave.com/v3/transactions/'.$data['id'].'/verify',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_SSL_VERIFYPEER => 0,
         CURLOPT_SSL_VERIFYHOST => 0,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => json_encode($data),
+        CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_HTTPHEADER => [
             "content-type: application/json",
-            "cache-control: no-cache"
+            "cache-control: no-cache",
+            'authorization:'.$token
         ],
     ));
     

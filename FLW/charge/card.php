@@ -1,11 +1,20 @@
 <?php
+require "vendor/autoload.php";
+
+// load the .env
+$dotenv = new Dotenv\Dotenv(__DIR__);
+$dotenv->load();
+
 session_start();
 require('library.php');
 
+
+
 //set keys
-$secret_key = "FLWSECK-xxxx-X";
-$public_key = "FLWPUBK-xxxx-X";
-$baseurl = "https://ravesandboxapi.flutterwave.com";
+$secret_key = getenv('SECRET_KEY');
+$public_key = getenv('PUBLIC_KEY');
+$encryption_key = getenv('ENCRYPTION_KEY');
+$baseurl = "https://api.flutterwave.com";
 $page_status = '';
 
 // initiate transaction
@@ -19,43 +28,41 @@ if (isset($_POST['initiate'])){
 
     //card payment
     $data = array(
-        'PBFPubKey' => $public_key,
-        'cardno' => $card,
+        'card_number' => $card,
         'currency' => 'NGN',
         'country' => 'NG',
         'cvv' => $cvv,
-        // 'pin' => '3310',
-        // 'suggested_auth' => 'PIN',
         'amount' => '10',
-        'expiryyear' => $year,
-        'expirymonth' => $month,
+        'expiry_year' => $year,
+        'expiry_month' => $month,
         'redirect_url' => 'https://github.com/emmajiugo',
         'email' => $email,
-        'txRef' => time(),
+        'tx_ref' => time(),
     );
         
     $SecKey = $secret_key;
 
-    $key = getKey($SecKey); 
+    $key = $encryption_key;
     $dataReq = json_encode($data);
     $post_enc = encrypt3Des( $dataReq, $key );
     $postdata = array(
-        'PBFPubKey' => $public_key,
-        'client' => $post_enc,
-        'alg' => '3DES-24'
+        'client' => $post_enc
     );
 
-    //setup for charg
-    $url = $baseurl."/flwv3-pug/getpaidx/api/charge";
-    $res = postCURL($url, $postdata);
+    //setup for charge
+    $url = $baseurl."/v3/charges?type=card";
+    $res = postCURL($url, $postdata, $secret_key);
 
-    // echo "<pre>";
-    // print_r($res);
+    echo "<pre>";
+    print_r($res);
+    echo "</pre>";
 
     if ($res['status'] == 'success') {
-        $page_status = $res['data']['suggested_auth'];
+        $page_status = $res['data']['authorization']['mode'];
         $_SESSION['auth'] = $page_status;
         $_SESSION['payload'] = $data;
+    }else{
+        $msg_err = $res['message'];
     }
         
 }
@@ -66,30 +73,26 @@ if (isset($_POST['enter_pin'])){
 
     //push into payload array
     $data = $_SESSION['payload'];
-    $data['pin'] = $pin;
-    $data['suggested_auth'] = $_SESSION['auth'];    
+    $data['authorization']['pin'] = $pin;
+    $data['authorization']['mode'] = $_SESSION['auth'];    
         
     $SecKey = $secret_key;
 
-    $key = getKey($SecKey); 
+    $key = $encryption_key; 
     $dataReq = json_encode($data);
     $post_enc = encrypt3Des( $dataReq, $key );
     $postdata = array(
-        'PBFPubKey' => $public_key,
-        'client' => $post_enc,
-        'alg' => '3DES-24'
+        'client' => $post_enc
     );
 
-    //setup for charg
-    $url = $baseurl."/flwv3-pug/getpaidx/api/charge";
-    $res = postCURL($url, $postdata);
-
-    // echo "<pre>";
-    // print_r($res);
+    //setup for charge
+    $url = $baseurl."/v3/charges?type=card";
+    $res = postCURL($url, $postdata, $secret_key);
 
     if ($res['status'] == 'success') {
-        $page_status = 'OTP';
-        $_SESSION['flwref'] = $res['data']['flwRef'];
+        $page_status = $res['meta']['authorization']['mode'];
+        $id = $res['data']['id'];
+        $_SESSION['flwref'] = $res['data']['flw_ref'];
     }
         
 }
@@ -100,30 +103,23 @@ if (isset($_POST['enter_otp'])){
 
     // get flwref  
     $data = array(
-        'PBFPubKey' => $public_key,
-        'transaction_reference' => $_SESSION['flwref'],
+        'type' => 'card',
+        'flw_ref' => $_SESSION['flwref'],
         'otp' => $otp
     );
 
     //setup for charg
-    $url = $baseurl."/flwv3-pug/getpaidx/api/validatecharge";
-    $res = postCURL($url, $data);
+    $url = $baseurl."/v3/validate-charge";
+    $res = postCURL($url, $data, $secret_key);
 
-    // echo "<pre>";
-    // print_r($res);
-
-    if ($res['status'] == 'success' && $res['data']['data']['responsecode'] == 00){
+    if ($res['status'] == 'success'){
         //call the verify endpoint
-        $txref = $res['data']['tx']['txRef'];
-        $data = array(
-            "txref" => $txref,
-            "SECKEY" => $secret_key
-        );
+        $prid = $res['data']['id'];
+        
+        $url = $baseurl.'/v3/transactions/'.$prid.'/verify';
+        $res = getCURL($url,$secret_key);
 
-        $url = $baseurl.'/flwv3-pug/getpaidx/api/v2/verify';
-        $res = postCURL($url, $data);
-
-        if ($res['status'] == 'success' && $res['data']['chargecode'] == 00){
+        if ($res['status'] == 'success' && $res['data']['status'] == 'successful'){
             $msg = $res['data']['status'];
             echo '<script>console.log('.json_encode($res).');</script>';
         }
@@ -161,8 +157,14 @@ if (isset($_POST['enter_otp'])){
         </div>';
     }
 
+    if (isset($msg_err)){
+        echo '<div class="alert alert-danger" role="alert">
+            '.$msg_err.'
+        </div>';
+    }
+
     // Ask for pin
-    if($page_status == 'PIN'){
+    if($page_status == 'pin'){
 
 ?>
 
@@ -178,7 +180,7 @@ if (isset($_POST['enter_otp'])){
 
 <?php
 
-    } elseif ($page_status == 'OTP') {
+    } elseif ($page_status == 'otp') {
 
         ?>
 

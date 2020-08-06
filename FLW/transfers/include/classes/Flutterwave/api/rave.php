@@ -35,8 +35,8 @@ class Rave {
     protected $transactionPrefix;
    // public $logger;
     protected $handler;
-    protected $stagingUrl = 'https://ravesandboxapi.flutterwave.com';
-    protected $liveUrl = 'https://api.ravepay.co';
+    protected $stagingUrl = 'https://api.flutterwave.com';
+    protected $liveUrl = 'https://api.flutterwave.com';
     protected $baseUrl;
     protected $transactionData;
     protected $overrideTransactionReference;
@@ -649,7 +649,7 @@ class Rave {
 
     function postURL($data){
         // make request to endpoint using unirest.
-        $headers = array('Content-Type' => 'application/json');
+        $headers = array('Content-Type' => 'application/json', 'Authorization' => 'Bearer '.$this->secretKey);
         $body = Body::json($data);
         $url = $this->baseUrl.'/'.$this->end_point;
 

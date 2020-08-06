@@ -32,12 +32,17 @@ class api extends general
 
 		$array_options = array(
 			'amount'=>$amount,
-			'customer_email'=>$customer_email,
+			'customer'=> [ 'email' => $customer_email],
 			'currency'=>$currency,
-			'txref'=>$txref,
-			'PBFPubKey'=>$PBFPubKey,
-			'redirect_url'=>$redirect_url,
-			'payment_plan'=>$payment_plan
+			'tx_ref'=>$txref,
+			'payment_options' => 'card',
+			'redirect_url' => $redirect_url,
+			'payment_plan'=>$payment_plan,
+			"customizations" => [
+				"title" => "Pied Piper Payments",
+				"description" => "Middleout isn't free. Pay the price",
+				"logo" => "https://miro.medium.com/fit/c/128/128/1*Z1GByNW4KCR8HNCUjbgzdA.png"
+			]
 		);
 
 		$pay = new Pay();
@@ -63,11 +68,13 @@ class api extends general
 	public function getBanks()
 	{
 		$curl = curl_init();
-		$base_url = "https://ravesandboxapi.flutterwave.com/banks";
+		$base_url = "https://api.flutterwave.com/v3/banks";
+		$token = "Bearer ".$_ENV['SECRET_KEY'];
 		$header = array(
-		  	"Content-Type: application/json",
+			  "Content-Type: application/json",
+			  "Authorization: ".$token
 		);
-		$query = "?country=NG";//pss NG, GH, KE
+		$query = "/NG";//pss NG, GH, KE
 
 		curl_setopt_array($curl, array(
 		  	CURLOPT_URL => $base_url . $query,
@@ -98,11 +105,13 @@ class api extends general
 	public function getBankName($bankcode)
 	{
 		$curl = curl_init();
-		$base_url = "https://ravesandboxapi.flutterwave.com/banks";
+		$base_url = "https://api.flutterwave.com/v3/banks";
+		$token = "Bearer ".$_ENV['SECRET_KEY'];
 		$header = array(
-		  	"Content-Type: application/json",
+			  "Content-Type: application/json",
+			  "Authorization: ".$token
 		);
-		$query = "?country=NG";//pss NG, GH, KE
+		$query = "/NG";//pss NG, GH, KE
 
 		curl_setopt_array($curl, array(
 		  	CURLOPT_URL => $base_url . $query,
@@ -145,20 +154,21 @@ class api extends general
 	public function verifyAccount($bankcode, $accountno)
 	{
 		$curl = curl_init();
+		$token = "Bearer ".$_ENV['SECRET_KEY'];
 
 		curl_setopt_array($curl, array(
-		  CURLOPT_URL => "https://ravesandboxapi.flutterwave.com/flwv3-pug/getpaidx/api/resolve_account",
+		  CURLOPT_URL => "https://api.flutterwave.com/v3/accounts/resolve",
 		  CURLOPT_RETURNTRANSFER => true,
 		  CURLOPT_CUSTOMREQUEST => "POST",
 		  CURLOPT_POSTFIELDS => json_encode([
-		    'recipientaccount' => $accountno,
-		    'destbankcode' => $bankcode,
-		    'PBFPubKey' => $_ENV['PUBLIC_KEY']//"FLWPUBK-56e4a2c6c9a6b58364bfd07fc1993e2c-X"
-		    /*I noticed that my test key is not working with this feature so I copied from the page.*/
+		    'account_number' => $accountno,
+		    'account_bank' => $bankcode,
+		    
 		  ]),
 		  CURLOPT_HTTPHEADER => [
 		    "content-type: application/json",
-		    "cache-control: no-cache"
+			"cache-control: no-cache",
+			"authorization: ".$token
 		  ],
 		));
 
@@ -187,7 +197,6 @@ class api extends general
 			'account_bank' => $bankcode,
 			'account_number' => $accountno,
 			'amount' => $amount,
-			'seckey' => $secretKey,
 			'narration' => $narration,
 			'currency' => "NGN",
 			'reference' => "rave-".time()
@@ -203,19 +212,19 @@ class api extends general
 	//bulk transfer
 	public function bulkTransfer($members)
 	{
-		//arrange bulk_data in array
+		
 		foreach ($members as $member) {
 			$bulk_data[] = array (
-		        'Bank' => $member['staffbank'],
-		        'Account Number' => $member['staffacctno'],
-		        'Amount' => $member['amount'],
-		        'Narration' => 'Something goes here',
+		        'bank_code' => $member['staffbank'],
+		        'account_number' => $member['staffacctno'],
+		        'amount' => $member['amount'],
+		        'narration' => 'Something goes here',
 				'currency' => 'NGN',
 				'reference' => 'rave-'.time()
 		    );
 		}
 
-		$data["seckey"] = $_ENV['SECRET_KEY'];
+
 		$data["title"] = "My staff salary";
 		$data["bulk_data"] = $bulk_data;
 		
