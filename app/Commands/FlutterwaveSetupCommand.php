@@ -15,6 +15,10 @@ class FlutterwaveSetupCommand extends Command
      *
      * @var string
      */
+    // FIX 2 COMMAND
+    // protected $signature = 'setup {testSecretKey? : Test Secret Key from your Flutterwave dashboard} {liveSecretKey? : Live Secret Key from your Flutterwave dashboard} {--mac : Configuration for MAC users} {--windows : Configuration for WINDOWS users}';
+
+    // FIX 1 COMMAND
     protected $signature = 'setup {testSecretKey? : Test Secret Key from your Flutterwave dashboard} {liveSecretKey? : Live Secret Key from your Flutterwave dashboard} {--mac : Configuration for MAC users} {--windows : Configuration for WINDOWS users}';
 
     /**
@@ -28,9 +32,7 @@ class FlutterwaveSetupCommand extends Command
      * initialize keys
      */
     private $liveSecretKey;
-    // private $livePublicKey;
     private $testSecretKey;
-    // private $testPublicKey;
     protected $files;
 
     /**
@@ -48,18 +50,16 @@ class FlutterwaveSetupCommand extends Command
     protected function getKeys()
     {
         $this->liveSecretKey = $this->argument('liveSecretKey');
-        // $this->livePublicKey = $this->argument('livePublicKey');
         $this->testSecretKey = $this->argument('testSecretKey');
-        // $this->testPublicKey = $this->argument('testPublicKey');
 
         // check if OS is passed
-        $mac = $this->option('mac');
-        $windows = $this->option('windows');
+        // $mac = $this->option('mac');
+        // $windows = $this->option('windows');
 
-        if (!$mac && !$windows) {
-            $this->info("\nPlease pass the tag <comment>--mac</comment> (for MAC users) or <comment>--windows</comment> (for WINDOWS users) to allow us setup your ENV variables.\n");
-            exit();
-        }
+        // if (!$mac && !$windows) {
+        //     $this->info("\nPlease pass the tag <comment>--mac</comment> (for MAC users) or <comment>--windows</comment> (for WINDOWS users) to allow us setup your ENV variables.\n");
+        //     exit();
+        // }
 
         $this->info("");
         $this->info("FLUTTERWAVE CLI SETUP");
@@ -68,15 +68,9 @@ class FlutterwaveSetupCommand extends Command
 
         if ($this->confirm('Do you wish to continue?')) {
 
-            // if (!$this->testPublicKey) {
-            //     $this->testPublicKey = $this->ask('Enter Flutterwave Test Public Key');
-            // }
             if (!$this->testSecretKey) {
                 $this->testSecretKey = $this->ask('Enter Flutterwave Test Secret Key');
             }
-            // if (!$this->livePublicKey) {
-            //     $this->livePublicKey = $this->ask('Enter Flutterwave Live Public Key');
-            // }
             if (!$this->liveSecretKey) {
                 $this->liveSecretKey = $this->ask('Enter Flutterwave Live Secret Key');
             }
@@ -88,43 +82,39 @@ class FlutterwaveSetupCommand extends Command
 
         }
 
-        // SETUP FIX 2 NB: add a command to get OS from user
-        $externalCommand = "echo 'TEST_SECRET_KEY=".$this->testSecretKey."\nLIVE_SECRET_KEY=".$this->liveSecretKey."'";
+        // SETUP FIX 2
+        // $externalCommand = "echo 'TEST_SECRET_KEY=".$this->testSecretKey."\nLIVE_SECRET_KEY=".$this->liveSecretKey."'";
 
-        if ($mac) {
-            $os = " >~/.composer/vendor/emmajiugo/flutterwave-cli/builds/.env";
-        } else if ($windows) {
-            $os = " >%APPDATA%\\Composer\\vendor\\emmajiugo\\flutterwave-cli\\builds\\.env";
-        }
+        // if ($mac) {
+        //     $os = " >~/.composer/vendor/emmajiugo/flutterwave-cli/builds/.env";
+        // } else if ($windows) {
+        //     $os = " >%APPDATA%\\Composer\\vendor\\emmajiugo\\flutterwave-cli\\builds\\.env";
+        // }
 
-        try {
+        // try {
 
-            exec($externalCommand . $os, $output, $return_var);
+        //     exec($externalCommand . $os, $output, $return_var);
 
-            if ($return_var > 0) {
-                $this->error('Oops! something went wrong. Please contact support on this.');
-            } else {
-                $this->comment('Hurray! Flutterwave CLI is ready to use.');
-            }
+        //     if ($return_var > 0) {
+        //         $this->error('Oops! something went wrong. Please contact support on this.');
+        //     } else {
+        //         $this->comment('Hurray! Flutterwave CLI is ready to use.');
+        //     }
 
-        } catch (\Throwable $th) {
-            $this->error('Oops! something went wrong. Please contact support on this.');
-        }
-
-
-        // SETUP FIX 1
-        // $content = "<?php\nreturn [
-        //     'TEST_SECRET_KEY' => '". $this->testSecretKey ."',
-        //     'LIVE_SECRET_KEY' => '". $this->liveSecretKey ."'\n];";
-
-        // if (Storage::put("FLWCLI/env.php", $content)) {
-        //     $this->comment('Hurray! Flutterwave CLI is ready to use.');
-        // } else {
+        // } catch (\Throwable $th) {
         //     $this->error('Oops! something went wrong. Please contact support on this.');
         // }
 
-        // $output = Storage::get("FLWCLI/env.php");
-        // echo $output;
+
+        // SETUP FIX 1
+        $content = $this->testSecretKey .",". $this->liveSecretKey;
+
+        if (Storage::put("FLW-CLI/env.php", $content)) {
+            $this->comment('Hurray! Flutterwave CLI is ready to use.');
+        } else {
+            $this->error('Oops! something went wrong. Please contact support on this.');
+        }
+
     }
 
     /**

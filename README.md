@@ -15,10 +15,11 @@ The Flutterwave CLI application helps you tests some features of Flutterwave on 
 3. Run on your terminal `flutterwave -v` to view the available commands.  
 **NB:** If you  get the error `command not found`, don't worry ;) it is not an error, visit this [stackoverflow page](https://stackoverflow.com/questions/63020670/flutterwave-command-not-working-flutterwave-cli) to read how you can configure/fix it.
 4. Setup your CLI by adding your Flutterwave keys (Test and Live).  
-Run `flutterwave setup --mac`.  
+Run `flutterwave setup`.  
+<!-- Run `flutterwave setup --mac`.   -->
 **NB:** This is a one time setup and your keys are stored in your computer and not sent to any server.  
-For the CLI to setup the ENV properly, you need to identify your system by passing `--mac` or `--windows` tag.  
-Support for other OS is upcoming.
+<!-- For the CLI to setup the ENV properly, you need to identify your system by passing `--mac` or `--windows` tag.  
+Support for other OS is upcoming. -->
 
 ## Usage:
 

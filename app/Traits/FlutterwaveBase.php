@@ -3,14 +3,14 @@ namespace App\Traits;
 
 use Illuminate\Support\Facades\Http;
 
+use Storage;
+
 /**
  * Rave Base functions are included here
  */
 trait FlutterwaveBase
 {
-    private $testPublicKey;
     private $testSecretKey;
-    private $livePublicKey;
     private $liveSecretKey;
     private $baseUrl = "https://api.flutterwave.com/v3/";
 
@@ -19,10 +19,19 @@ trait FlutterwaveBase
      */
     public function __construct()
     {
-        // $this->testPublicKey = env('TEST_PUBLIC_KEY');
-        $this->testSecretKey = env('TEST_SECRET_KEY');
-        // $this->livePublicKey = env('LIVE_PUBLIC_KEY');
-        $this->liveSecretKey = env('LIVE_SECRET_KEY');
+        // $this->testSecretKey = env('TEST_SECRET_KEY');
+        // $this->liveSecretKey = env('LIVE_SECRET_KEY');
+
+        try {
+            $output = Storage::get("FLW-CLI/env.php") ?? "";
+            $keys = explode(",", $output);
+
+            $this->testSecretKey = $keys[0];
+            $this->liveSecretKey = $keys[1];
+        } catch (\Throwable $th) {
+            $this->testSecretKey = "";
+            $this->liveSecretKey = "";
+        }
     }
 
     /**
@@ -123,10 +132,8 @@ trait FlutterwaveBase
     public function HttpGet($endpoint, $prod) {
         try {
             if ($prod) {
-                // $pkey = $this->livePublicKey;
                 $skey = $this->liveSecretKey;
             } else {
-                // $pkey = $this->testPublicKey;
                 $skey = $this->testSecretKey;
             }
 
